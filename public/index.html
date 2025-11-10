@@ -321,7 +321,7 @@
             padding-left: 20px;
             position: relative;
             z-index: 1;
-            font-weight: 500;
+            font-weight: 700;
         }
 
         .rsvp-form {
@@ -367,13 +367,13 @@
             padding: 20px;
             border: none;
             border-radius: 0 !important;
-            font-size: 18px;
-            letter-spacing: 0.1em;
+            font-size: 20px;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             cursor: pointer;
             transition: opacity 0.2s;
-            font-family: 'Courier New', 'Courier', monospace;
-            font-weight: bold;
+            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            font-weight: 900;
             position: relative;
             z-index: 1;
             background: #FFFFFF;
@@ -516,7 +516,7 @@
         <div class="rsvp-content">
             <button class="rsvp-close-btn" id="rsvpCloseBtn" aria-label="Close">×</button>
             <h2 class="rsvp-event-title" id="modalEventTitle">Bowling</h2>
-            <div class="rsvp-event-time" id="modalEventTime">November 12<br>20:00<br>Berolina<br>Address here</div>
+            <div class="rsvp-event-time" id="modalEventTime">November 12<br>20:00<br>Address here</div>
 
             <form class="rsvp-form" id="rsvpForm">
                 <input type="text" class="rsvp-input" placeholder="YOUR NAME" required id="rsvpName" autocomplete="name">
@@ -1746,7 +1746,7 @@
             const titleElement = document.getElementById('modalEventTitle');
             titleElement.textContent = event.title;
 
-            document.getElementById('modalEventTime').innerHTML = `${event.date}<br>${event.time}<br>${event.location}<br>${event.address}`;
+            document.getElementById('modalEventTime').innerHTML = `${event.date}<br>${event.time}<br>${event.address}`;
 
             const modal = document.getElementById('rsvpModal');
             const content = document.querySelector('.rsvp-content');
