@@ -12,11 +12,16 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Initialize SQLite database
-const db = new sqlite3.Database('./rsvps.db', (err) => {
+// Use /app/data for persistent storage in Docker/Northflank
+const dbPath = process.env.NODE_ENV === 'production'
+    ? '/app/data/rsvps.db'
+    : './rsvps.db';
+
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error opening database:', err);
     } else {
-        console.log('Database connected');
+        console.log(`Database connected: ${dbPath}`);
         initializeDatabase();
     }
 });
