@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Calendar Format</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 40px;
+            background: #0a0a0a;
+            color: #e8e8e8;
+        }
+        button {
+            padding: 15px 30px;
+            background: #333;
+            border: 1px solid #666;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #444;
+        }
+        pre {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .success {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calendar File Test</h1>
+    <p>This shows the exact ICS file content that will be generated:</p>
+
+    <button onclick="testCalendar()">Generate Test Calendar File</button>
+    <button onclick="downloadTest()">Download Test File</button>
+
+    <pre id="output"></pre>
+
+    <script>
+        const testEvent = {
+            date: 'November 12',
+            time: '20:00',
+            endTime: '22:00',
+            title: 'Bowling',
+            location: 'Berolina, Kleiststraße 3-6, 10787 Berlin'
+        };
+
+        function generateCalendarFile(event) {
+            const dateStr = event.date;
+            const timeStr = event.time;
+            const endTimeStr = event.endTime;
+
+            const month = dateStr.split(' ')[0];
+            const day = parseInt(dateStr.split(' ')[1]);
+            const year = 2025;
+
+            const [startHour, startMin] = timeStr.split(':').map(n => parseInt(n));
+            const [endHour, endMin] = endTimeStr.split(':').map(n => parseInt(n));
+
+            const monthMap = {
+                'January': 0, 'February': 1, 'March': 2, 'April': 3,
+                'May': 4, 'June': 5, 'July': 6, 'August': 7,
+                'September': 8, 'October': 9, 'November': 10, 'December': 11
+            };
+
+            const startDate = new Date(Date.UTC(year, monthMap[month], day, startHour - 1, startMin, 0));
+            const endDate = new Date(Date.UTC(year, monthMap[month], day, endHour - 1, endMin, 0));
+
+            function formatICSDate(date) {
+                const year = date.getUTCFullYear();
+                const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(date.getUTCDate()).padStart(2, '0');
+                const hours = String(date.getUTCHours()).padStart(2, '0');
+                const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+                return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+            }
+
+            const startICS = formatICSDate(startDate);
+            const endICS = formatICSDate(endDate);
+            const now = formatICSDate(new Date());
+
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//40 Hours with Caspar//casparboehme.com//EN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'X-WR-CALNAME:40 Hours with Caspar',
+                'X-WR-TIMEZONE:Europe/Berlin',
+                'BEGIN:VEVENT',
+                `UID:${now}-${event.title.replace(/\s/g, '-')}@casparboehme.com`,
+                `DTSTAMP:${now}`,
+                `DTSTART:${startICS}`,
+                `DTEND:${endICS}`,
+                `SUMMARY:${event.title} - 40 Hours with Caspar`,
+                `LOCATION:${event.location}`,
+                `DESCRIPTION:Join us for ${event.title}!\\n\\nLocation: ${event.location}\\n\\nPart of Caspar's 40-hour birthday celebration November 12-13\\, 2025.`,
+                'STATUS:CONFIRMED',
+                'TRANSP:OPAQUE',
+                'SEQUENCE:0',
+                'BEGIN:VALARM',
+                'TRIGGER:-PT30M',
+                `DESCRIPTION:${event.title} in 30 minutes`,
+                'ACTION:DISPLAY',
+                'END:VALARM',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            return icsContent;
+        }
+
+        function testCalendar() {
+            const icsContent = generateCalendarFile(testEvent);
+            document.getElementById('output').innerHTML =
+                '<span class="success">✅ Calendar file generated successfully!</span>\n\n' +
+                'File content (ready for Google Calendar, Apple Calendar, Outlook):\n\n' +
+                icsContent;
+        }
+
+        function downloadTest() {
+            const icsContent = generateCalendarFile(testEvent);
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'test-bowling.ics';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('Calendar file downloaded! Try importing to Google Calendar:\n\n1. Open Google Calendar\n2. Click "+" next to "Other calendars"\n3. Select "Import"\n4. Upload the .ics file');
+        }
+    </script>
+</body>
+</html>

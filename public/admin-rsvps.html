@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>40 Hours - RSVP Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #e8e8e8;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 200;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .event-section {
+            margin-bottom: 3rem;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px 12px 0 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
+        }
+
+        .event-title {
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .event-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .attendees-list {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .attendee {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .attendee:last-child {
+            border-bottom: none;
+        }
+
+        .attendee-name {
+            font-size: 1rem;
+        }
+
+        .attendee-plus-ones {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: #e8e8e8;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .error {
+            background: rgba(255, 100, 100, 0.1);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+            color: #ff6666;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .refresh-btn {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RSVP Dashboard</h1>
+        <p class="subtitle">40 Hours with Caspar - November 12-13, 2025</p>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalGuests">0</div>
+                <div class="stat-label">Total Guests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRSVPs">0</div>
+                <div class="stat-label">RSVPs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPlusOnes">0</div>
+                <div class="stat-label">Plus Ones</div>
+            </div>
+        </div>
+
+        <div id="content">
+            <div class="loading">Loading RSVPs...</div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="loadRSVPs()">🔄 Refresh</button>
+
+    <script>
+        const events = [
+            { id: 'bowling', title: 'Bowling', date: 'November 12', time: '20:00' },
+            { id: 'new-oldtimer', title: 'New Oldtimer', date: 'November 12', time: '22:30' },
+            { id: 'brunch', title: 'Brunch', date: 'November 13', time: '11:30' },
+            { id: 'walk-&-gemäldegalerie', title: 'Walk & Gemäldegalerie', date: 'November 13', time: '14:00' },
+            { id: 'workout', title: 'Workout', date: 'November 13', time: '19:00' },
+            { id: 'dinner', title: 'Dinner', date: 'November 13', time: '20:30' },
+            { id: 'drinks', title: 'Drinks', date: 'November 13', time: '23:00' }
+        ];
+
+        async function loadRSVPs() {
+            const content = document.getElementById('content');
+            content.innerHTML = '<div class="loading">Loading RSVPs...</div>';
+
+            try {
+                const response = await fetch('/api/admin/rsvps');
+                const data = await response.json();
+
+                if (!data.rsvps) {
+                    throw new Error('Invalid response format');
+                }
+
+                displayRSVPs(data.rsvps);
+            } catch (error) {
+                console.error('Error loading RSVPs:', error);
+                content.innerHTML = `
+                    <div class="error">
+                        ❌ Failed to load RSVPs. Make sure the server is running.
+                    </div>
+                `;
+            }
+        }
+
+        function displayRSVPs(rsvps) {
+            // Group by event
+            const grouped = {};
+            events.forEach(event => {
+                grouped[event.id] = [];
+            });
+
+            rsvps.forEach(rsvp => {
+                if (grouped[rsvp.event_id]) {
+                    grouped[rsvp.event_id].push(rsvp);
+                }
+            });
+
+            // Calculate stats
+            let totalRSVPs = rsvps.length;
+            let totalPlusOnes = rsvps.reduce((sum, rsvp) => sum + (rsvp.plus_ones || 0), 0);
+            let totalGuests = totalRSVPs + totalPlusOnes;
+
+            document.getElementById('totalGuests').textContent = totalGuests;
+            document.getElementById('totalRSVPs').textContent = totalRSVPs;
+            document.getElementById('totalPlusOnes').textContent = totalPlusOnes;
+
+            // Display events
+            const content = document.getElementById('content');
+            content.innerHTML = '';
+
+            events.forEach(event => {
+                const eventRSVPs = grouped[event.id] || [];
+                const eventSection = document.createElement('div');
+                eventSection.className = 'event-section';
+
+                const eventCount = eventRSVPs.length;
+                const eventPlusOnes = eventRSVPs.reduce((sum, rsvp) => sum + (rsvp.plus_ones || 0), 0);
+                const eventTotal = eventCount + eventPlusOnes;
+
+                eventSection.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-count">${eventTotal} guest${eventTotal !== 1 ? 's' : ''} (${eventCount} RSVP${eventCount !== 1 ? 's' : ''})</div>
+                    </div>
+                    <div class="attendees-list">
+                        ${eventRSVPs.length > 0 ?
+                            eventRSVPs.map(rsvp => `
+                                <div class="attendee">
+                                    <div class="attendee-name">${rsvp.name}</div>
+                                    <div class="attendee-plus-ones">
+                                        ${rsvp.plus_ones > 0 ? `+${rsvp.plus_ones}` : ''}
+                                    </div>
+                                </div>
+                            `).join('') :
+                            '<div class="empty-state">No RSVPs yet</div>'
+                        }
+                    </div>
+                `;
+
+                content.appendChild(eventSection);
+            });
+        }
+
+        // Load RSVPs on page load
+        loadRSVPs();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadRSVPs, 30000);
+    </script>
+</body>
+</html>

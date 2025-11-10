@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Calendar Export</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            padding: 40px;
+            background: #0a0a0a;
+            color: #e8e8e8;
+        }
+        button {
+            padding: 15px 30px;
+            background: #333;
+            border: 1px solid #666;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #444;
+        }
+        pre {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calendar Export Test</h1>
+    <p>Click to test calendar file generation:</p>
+
+    <button onclick="testBowling()">Test Bowling Event</button>
+    <button onclick="testBrunch()">Test Brunch Event</button>
+
+    <pre id="output"></pre>
+
+    <script>
+        const testEvents = [
+            { date: 'November 12', time: '20:00', endTime: '22:00', title: 'Bowling', location: 'Berolina' },
+            { date: 'November 13', time: '11:30', endTime: '14:00', title: 'Brunch', location: 'Mommseneck' }
+        ];
+
+        function generateCalendarFile(event) {
+            const dateStr = event.date;
+            const timeStr = event.time;
+            const endTimeStr = event.endTime;
+
+            const month = dateStr.split(' ')[0];
+            const day = dateStr.split(' ')[1];
+            const year = "2025";
+
+            const startDate = new Date(`${month} ${day}, ${year} ${timeStr}:00 GMT+0100`);
+            const endDate = new Date(`${month} ${day}, ${year} ${endTimeStr}:00 GMT+0100`);
+
+            function formatICSDate(date) {
+                const year = date.getUTCFullYear();
+                const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(date.getUTCDate()).padStart(2, '0');
+                const hours = String(date.getUTCHours()).padStart(2, '0');
+                const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+                const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+                return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+            }
+
+            const startICS = formatICSDate(startDate);
+            const endICS = formatICSDate(endDate);
+            const now = formatICSDate(new Date());
+
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//40 Hours with Caspar//EN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+                'BEGIN:VEVENT',
+                `UID:${now}-${event.title.replace(/\s/g, '-')}@40hours-caspar.com`,
+                `DTSTAMP:${now}`,
+                `DTSTART:${startICS}`,
+                `DTEND:${endICS}`,
+                `SUMMARY:${event.title} - 40 Hours with Caspar`,
+                `LOCATION:${event.location}`,
+                `DESCRIPTION:Join us for ${event.title} at ${event.location}. Part of Caspar's 40-hour birthday celebration!`,
+                'STATUS:CONFIRMED',
+                'SEQUENCE:0',
+                'BEGIN:VALARM',
+                'TRIGGER:-PT30M',
+                'DESCRIPTION:Reminder: ' + event.title + ' in 30 minutes',
+                'ACTION:DISPLAY',
+                'END:VALARM',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            return icsContent;
+        }
+
+        function downloadCalendar(event) {
+            const icsContent = generateCalendarFile(event);
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `test-${event.title.replace(/\s/g, '-').toLowerCase()}.ics`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            // Display the content
+            document.getElementById('output').textContent =
+                `✅ Calendar file downloaded: ${event.title}\n\n` +
+                `File content:\n${icsContent}`;
+        }
+
+        function testBowling() {
+            downloadCalendar(testEvents[0]);
+        }
+
+        function testBrunch() {
+            downloadCalendar(testEvents[1]);
+        }
+    </script>
+</body>
+</html>

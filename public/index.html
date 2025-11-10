@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>40 Hours with Caspar</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --text-primary: #e8e8e8;
+            --text-secondary: #888;
+            --accent: #3b82f6;
+            --surface: #151515;
+            --border: rgba(255, 255, 255, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Main View */
+        #mainView {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 1;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #mainView.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+        }
+
+        /* Record Circle */
+        .record-container {
+            position: relative;
+            width: min(90vw, 600px);
+            height: min(90vw, 600px);
+            margin: 0 auto;
+        }
+
+        .center-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .center-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .center-text {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 300;
+        }
+
+        .records {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .record {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .record::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .record:hover::before {
+            opacity: 1;
+        }
+
+        .record:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .record-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%);
+            transition: filter 0.4s;
+        }
+
+        .record:hover .record-image {
+            filter: grayscale(0%);
+        }
+
+        .record-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+        }
+
+        .record-info {
+            width: 100%;
+        }
+
+        .record-time {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .record-title {
+            font-size: 0.75rem;
+            font-weight: 400;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        /* RSVP View */
+        #rsvpView {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        #rsvpView.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rsvp-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 3rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        .back-button:hover {
+            color: var(--text-primary);
+        }
+
+        .event-header {
+            margin-bottom: 3rem;
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .event-title {
+            font-size: 1.75rem;
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.75rem;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form */
+        .form-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg);
+        }
+
+        .form-input::placeholder {
+            color: #444;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        /* Attendees List */
+        .attendees-section {
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .attendee-item {
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .attendee-item:last-child {
+            border-bottom: none;
+        }
+
+        .attendee-name {
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .attendee-guests {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--surface);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 200;
+        }
+
+        .success-message.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .record {
+                width: 110px;
+                height: 110px;
+            }
+
+            .record-title {
+                font-size: 0.7rem;
+            }
+
+            .record-time {
+                font-size: 0.6rem;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
+            .rsvp-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main View -->
+    <div id="mainView">
+        <div class="header">
+            <h1 class="title">40 Hours with Caspar</h1>
+            <p class="subtitle">November 12–13, 2025</p>
+        </div>
+
+        <div class="record-container">
+            <div class="center-info">
+                <div class="center-date">Berlin</div>
+                <div class="center-text">Tap to RSVP</div>
+            </div>
+            
+            <div class="records" id="recordsContainer"></div>
+        </div>
+    </div>
+
+    <!-- RSVP View -->
+    <div id="rsvpView">
+        <div class="rsvp-container">
+            <button class="back-button" onclick="closeRSVP()">
+                <span>←</span>
+                <span>Back to events</span>
+            </button>
+
+            <div class="event-header">
+                <img class="event-image" id="eventImage" src="" alt="">
+                <h2 class="event-title" id="eventTitle"></h2>
+                <div class="event-meta">
+                    <div class="meta-item">
+                        <span>📅</span>
+                        <span id="eventDate"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span>🕐</span>
+                        <span id="eventTime"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Join this event</h3>
+                <form id="rsvpForm" onsubmit="submitRSVP(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="guestName">Your name</label>
+                        <input 
+                            type="text" 
+                            id="guestName" 
+                            class="form-input" 
+                            placeholder="Enter your name"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="plusOnes">Plus ones</label>
+                        <select id="plusOnes" class="form-select">
+                            <option value="0">Just me</option>
+                            <option value="1">+1</option>
+                            <option value="2">+2</option>
+                            <option value="3">+3</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-button">Confirm attendance</button>
+                </form>
+            </div>
+
+            <div class="attendees-section">
+                <h3 class="section-title">Who's coming</h3>
+                <div id="attendeesList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        ✓ You're on the list!
+    </div>
+
+    <script>
+        // API base URL - change this when deploying
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+
+        // Event data
+        const events = [
+            {
+                id: 'bowling',
+                title: 'Bowling',
+                location: 'Berolina Bowling Lounge',
+                date: 'Wednesday, Nov 12',
+                time: '20:00–22:00',
+                image: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?w=400&h=400&fit=crop'
+            },
+            {
+                id: 'oldtimer',
+                title: 'New Oldtimer',
+                location: 'Open end',
+                date: 'Wednesday, Nov 12',
+                time: '22:30+',
+                image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=400&fit=crop'
+            },
+            {
+                id: 'brunch',
+                title: 'Brunch',
+                location: 'Mommseneck',
+                date: 'Thursday, Nov 13',
+                time: '11:30–14:00',
+                image: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=400&h=400&fit=crop'
+            },
+            {
+                id: 'walk',
+                title: 'Art Walk',
+                location: 'Charlottenburg / Gemäldegalerie',
+                date: 'Thursday, Nov 13',
+                time: '14:00–18:00',
+                image: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=400&h=400&fit=crop'
+            },
+            {
+                id: 'workout',
+                title: 'Workout',
+                location: 'Ride.bln',
+                date: 'Thursday, Nov 13',
+                time: '19:00–20:00',
+                image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop'
+            },
+            {
+                id: 'dinner',
+                title: 'Dinner',
+                location: 'Ming Dynastie, Europa-Center',
+                date: 'Thursday, Nov 13',
+                time: '20:30–22:30',
+                image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=400&fit=crop'
+            },
+            {
+                id: 'drinks',
+                title: 'Drinks',
+                location: 'Viktoria Bar (tbd)',
+                date: 'Thursday, Nov 13',
+                time: '23:00+',
+                image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=400&fit=crop'
+            }
+        ];
+
+        let currentEventId = null;
+
+        // Position records in a circle
+        function positionRecords() {
+            const container = document.getElementById('recordsContainer');
+            container.innerHTML = '';
+            
+            const radius = Math.min(window.innerWidth, 600) * 0.35;
+            const centerX = radius;
+            const centerY = radius;
+            
+            events.forEach((event, index) => {
+                const angle = (index / events.length) * Math.PI * 2 - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                
+                const record = document.createElement('div');
+                record.className = 'record';
+                record.style.left = `${x}px`;
+                record.style.top = `${y}px`;
+                record.style.transform = 'translate(-50%, -50%)';
+                record.onclick = () => openRSVP(event.id);
+                
+                record.innerHTML = `
+                    <img class="record-image" src="${event.image}" alt="${event.title}">
+                    <div class="record-overlay">
+                        <div class="record-info">
+                            <div class="record-time">${event.time}</div>
+                            <div class="record-title">${event.title}</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(record);
+            });
+        }
+
+        // Open RSVP view
+        async function openRSVP(eventId) {
+            currentEventId = eventId;
+            const event = events.find(e => e.id === eventId);
+            
+            document.getElementById('eventImage').src = event.image;
+            document.getElementById('eventTitle').textContent = `${event.title} @ ${event.location}`;
+            document.getElementById('eventDate').textContent = event.date;
+            document.getElementById('eventTime').textContent = event.time;
+            
+            await updateAttendeesList();
+            
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('rsvpView').classList.add('active');
+            
+            // Reset form
+            document.getElementById('rsvpForm').reset();
+        }
+
+        // Close RSVP view
+        function closeRSVP() {
+            document.getElementById('rsvpView').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('mainView').classList.remove('hidden');
+            }, 300);
+        }
+
+        // Submit RSVP
+        async function submitRSVP(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('guestName').value.trim();
+            const plusOnes = parseInt(document.getElementById('plusOnes').value);
+            
+            if (!name) return;
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('.submit-button');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Saving...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/rsvps`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        eventId: currentEventId,
+                        name,
+                        plusOnes
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Failed to save RSVP');
+                
+                // Show success message
+                const successMsg = document.getElementById('successMessage');
+                successMsg.classList.add('show');
+                setTimeout(() => successMsg.classList.remove('show'), 3000);
+                
+                // Update list
+                await updateAttendeesList();
+                
+                // Reset form
+                document.getElementById('rsvpForm').reset();
+                
+            } catch (error) {
+                console.error('Error submitting RSVP:', error);
+                alert('Failed to save RSVP. Please try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Update attendees list
+        async function updateAttendeesList() {
+            const list = document.getElementById('attendeesList');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/rsvps/${currentEventId}`);
+                if (!response.ok) throw new Error('Failed to fetch attendees');
+                
+                const data = await response.json();
+                const eventAttendees = data.attendees || [];
+                
+                if (eventAttendees.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Be the first to RSVP</div>';
+                    return;
+                }
+                
+                list.innerHTML = eventAttendees.map(attendee => `
+                    <div class="attendee-item">
+                        <div class="attendee-name">${attendee.name}</div>
+                        <div class="attendee-guests">
+                            ${attendee.plus_ones > 0 ? `+${attendee.plus_ones}` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching attendees:', error);
+                list.innerHTML = '<div class="empty-state">Error loading attendees</div>';
+            }
+        }
+
+        // Initialize
+        window.addEventListener('resize', positionRecords);
+        positionRecords();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeRSVP();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch Ring - Minimal Elegant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            color: #e8e8e8;
+            overflow: hidden;
+        }
+
+        .dial-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+        }
+
+        /* Time Ring (Inner) */
+        .time-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+        }
+
+        .time-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .time-segment {
+            fill: none;
+            stroke: rgba(59, 130, 246, 0.1);
+            stroke-width: 40;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .time-segment.active {
+            stroke: rgba(59, 130, 246, 0.6);
+            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.4));
+        }
+
+        /* Records Ring (Outer) */
+        .records-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .record {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .record::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .record.holding {
+            transform: scale(1.15) !important;
+            border-color: rgba(59, 130, 246, 0.4);
+            z-index: 10;
+        }
+
+        .record.holding::before {
+            opacity: 1;
+        }
+
+        .record.holding .record-image {
+            filter: grayscale(0%) brightness(1.2);
+        }
+
+        .record-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%);
+            transition: filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .record-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent 60%);
+            display: flex;
+            align-items: flex-end;
+            padding: 0.75rem;
+            pointer-events: none;
+        }
+
+        .record-time {
+            font-size: 0.6rem;
+            color: #888;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+        }
+
+        .record-title {
+            font-size: 0.7rem;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        /* Center Info */
+        .center-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .center-time {
+            font-size: 2.5rem;
+            font-weight: 200;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .center-time.show {
+            opacity: 1;
+        }
+
+        .center-label {
+            font-size: 0.75rem;
+            color: #666;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dial-container">
+        <!-- Inner Time Ring -->
+        <div class="time-ring">
+            <svg viewBox="0 0 200 200">
+                <!-- 7 time segments for 7 events -->
+                <circle class="time-segment" data-event="0" cx="100" cy="100" r="80"
+                    stroke-dasharray="70.7 290" stroke-dashoffset="0" />
+                <circle class="time-segment" data-event="1" cx="100" cy="100" r="80"
+                    stroke-dasharray="70.7 290" stroke-dashoffset="-70.7" />
+                <circle class="time-segment" data-event="2" cx="100" cy="100" r="80"
+                    stroke-dasharray="70.7 290" stroke-dashoffset="-141.4" />
+                <circle class="time-segment" data-event="3" cx="100" cy="100" r="80"
+                    stroke-dasharray="70.7 290" stroke-dashoffset="-212.1" />
+                <circle class="time-segment" data-event="4" cx="100" cy="100" r="80"
+                    stroke-dasharray="70.7 290" stroke-dashoffset="-282.8" />
+                <circle class="time-segment" data-event="5" cx="100" cy="100" r="80"
+                    stroke-dasharray="70.7 290" stroke-dashoffset="-353.5" />
+                <circle class="time-segment" data-event="6" cx="100" cy="100" r="80"
+                    stroke-dasharray="70.7 290" stroke-dashoffset="-424.2" />
+            </svg>
+        </div>
+
+        <!-- Center Time Display -->
+        <div class="center-info">
+            <div class="center-time" id="centerTime">20:00</div>
+            <div class="center-label">Touch and hold</div>
+        </div>
+
+        <!-- Outer Records Ring -->
+        <div class="records-ring" id="recordsRing"></div>
+    </div>
+
+    <script>
+        const events = [
+            { time: '20:00', title: 'Bowling', image: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?w=200&h=200&fit=crop' },
+            { time: '22:30', title: 'Oldtimer', image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop' },
+            { time: '11:30', title: 'Brunch', image: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=200&h=200&fit=crop' },
+            { time: '14:00', title: 'Art Walk', image: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=200&h=200&fit=crop' },
+            { time: '19:00', title: 'Workout', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&h=200&fit=crop' },
+            { time: '20:30', title: 'Dinner', image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=200&h=200&fit=crop' },
+            { time: '23:00', title: 'Drinks', image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=200&h=200&fit=crop' }
+        ];
+
+        let holdTimer = null;
+        let currentHolding = null;
+
+        // Position records in circle
+        function positionRecords() {
+            const container = document.getElementById('recordsRing');
+            const radius = 250;
+            const centerX = 300;
+            const centerY = 300;
+
+            events.forEach((event, index) => {
+                const angle = (index / events.length) * Math.PI * 2 - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const record = document.createElement('div');
+                record.className = 'record';
+                record.style.left = `${x}px`;
+                record.style.top = `${y}px`;
+                record.style.transform = 'translate(-50%, -50%)';
+                record.dataset.index = index;
+
+                record.innerHTML = `
+                    <img class="record-image" src="${event.image}" alt="${event.title}">
+                    <div class="record-overlay">
+                        <div>
+                            <div class="record-time">${event.time}</div>
+                            <div class="record-title">${event.title}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Touch and hold detection
+                let startTime;
+
+                const onStart = (e) => {
+                    e.preventDefault();
+                    startTime = Date.now();
+
+                    holdTimer = setTimeout(() => {
+                        activateRecord(index, record);
+                    }, 200); // Subtle delay for premium feel
+                };
+
+                const onEnd = () => {
+                    clearTimeout(holdTimer);
+                    deactivateRecord(index, record);
+                };
+
+                // Mouse events
+                record.addEventListener('mousedown', onStart);
+                record.addEventListener('mouseup', onEnd);
+                record.addEventListener('mouseleave', onEnd);
+
+                // Touch events
+                record.addEventListener('touchstart', onStart, { passive: false });
+                record.addEventListener('touchend', onEnd);
+                record.addEventListener('touchcancel', onEnd);
+
+                container.appendChild(record);
+            });
+        }
+
+        function activateRecord(index, element) {
+            // Deactivate previous
+            if (currentHolding !== null && currentHolding !== index) {
+                const prevRecord = document.querySelector(`.record[data-index="${currentHolding}"]`);
+                if (prevRecord) prevRecord.classList.remove('holding');
+
+                const prevSegment = document.querySelector(`.time-segment[data-event="${currentHolding}"]`);
+                if (prevSegment) prevSegment.classList.remove('active');
+            }
+
+            currentHolding = index;
+
+            // Activate record
+            element.classList.add('holding');
+
+            // Light up time segment
+            const segment = document.querySelector(`.time-segment[data-event="${index}"]`);
+            if (segment) segment.classList.add('active');
+
+            // Show time in center
+            const centerTime = document.getElementById('centerTime');
+            centerTime.textContent = events[index].time;
+            centerTime.classList.add('show');
+
+            // Haptic feedback (if supported)
+            if (navigator.vibrate) {
+                navigator.vibrate(10);
+            }
+        }
+
+        function deactivateRecord(index, element) {
+            currentHolding = null;
+
+            // Deactivate record
+            element.classList.remove('holding');
+
+            // Dim time segment
+            const segment = document.querySelector(`.time-segment[data-event="${index}"]`);
+            if (segment) segment.classList.remove('active');
+
+            // Hide center time
+            const centerTime = document.getElementById('centerTime');
+            centerTime.classList.remove('show');
+        }
+
+        // Initialize
+        positionRecords();
+
+        // Prevent context menu on long press
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>
