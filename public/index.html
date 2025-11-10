@@ -269,9 +269,34 @@
             width: 90vw;
             text-align: left;
             position: relative;
-            padding: 40px 20px;
+            padding: 60px 20px 40px 20px;
             background: #0a0a0a;
             border-radius: 0 !important;
+        }
+
+        .rsvp-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            font-size: 32px;
+            font-weight: 300;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            z-index: 10;
+        }
+
+        .rsvp-close-btn:hover {
+            opacity: 0.7;
         }
 
         .rsvp-event-title {
@@ -287,15 +312,16 @@
         }
 
         .rsvp-event-time {
-            font-family: 'Courier New', 'Courier', monospace;
+            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
             font-size: 18px;
             color: #FFFFFF;
             margin-bottom: 80px;
-            line-height: 1.6;
+            line-height: 1.8;
             border-left: 2px solid #FFFFFF;
             padding-left: 20px;
             position: relative;
             z-index: 1;
+            font-weight: 500;
         }
 
         .rsvp-form {
@@ -304,7 +330,7 @@
 
         .rsvp-input {
             width: 100%;
-            padding: 12px 0;
+            padding: 16px 8px;
             background: transparent;
             border: none;
             border-bottom: 2px solid #FFFFFF;
@@ -488,8 +514,9 @@
     <!-- RSVP Modal -->
     <div class="rsvp-modal" id="rsvpModal">
         <div class="rsvp-content">
+            <button class="rsvp-close-btn" id="rsvpCloseBtn" aria-label="Close">×</button>
             <h2 class="rsvp-event-title" id="modalEventTitle">Bowling</h2>
-            <div class="rsvp-event-time" id="modalEventTime">November 12<br>20:00<br>Berolina</div>
+            <div class="rsvp-event-time" id="modalEventTime">November 12<br>20:00<br>Berolina<br>Address here</div>
 
             <form class="rsvp-form" id="rsvpForm">
                 <input type="text" class="rsvp-input" placeholder="YOUR NAME" required id="rsvpName" autocomplete="name">
@@ -1719,7 +1746,7 @@
             const titleElement = document.getElementById('modalEventTitle');
             titleElement.textContent = event.title;
 
-            document.getElementById('modalEventTime').innerHTML = `${event.date}<br>${event.time}<br>${event.location}`;
+            document.getElementById('modalEventTime').innerHTML = `${event.date}<br>${event.time}<br>${event.location}<br>${event.address}`;
 
             const modal = document.getElementById('rsvpModal');
             const content = document.querySelector('.rsvp-content');
@@ -2043,6 +2070,7 @@
         document.getElementById('rsvpSubmit').addEventListener('click', submitRSVP);
         document.getElementById('addToGoogleCal').addEventListener('click', addToGoogleCalendar);
         document.getElementById('addToAppleCal').addEventListener('click', addToAppleCalendar);
+        document.getElementById('rsvpCloseBtn').addEventListener('click', closeRSVPModal);
 
         document.getElementById('rsvpForm').addEventListener('submit', (e) => {
             e.preventDefault();
