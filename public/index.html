@@ -527,7 +527,7 @@
     <script>
         const events = [
             { date: 'November 12', time: '20:00', endTime: '22:00', title: 'Bowling', location: 'Berolina', address: 'Berolina, Kleiststraße 3-6, 10787 Berlin', color: 0x666666 },
-            { date: 'November 12', time: '22:30', endTime: '23:59', title: 'New Oldtimer', location: 'New Oldtimer', address: 'Lietzenburger Str. 12, 10789 Berlin', color: 0x666666 },
+            { date: 'November 12', time: '22:30', endTime: '23:59', title: 'rein feiern', location: 'New Oldtimer', address: 'Lietzenburger Str. 12, 10789 Berlin', color: 0x666666 },
             { date: 'November 13', time: '11:30', endTime: '14:00', title: 'Brunch', location: 'Cafe Einstein Mommseneck', address: 'Cafe Einstein Mommseneck, Mommsenstraße 45, 10629 Berlin', color: 0x666666 },
             { date: 'November 13', time: '14:00', endTime: '18:00', title: 'Walk & Gemäldegalerie', location: 'Gemäldegalerie', address: 'Matthäikirchplatz, 10785 Berlin', color: 0x666666 },
             { date: 'November 13', time: '19:00', endTime: '20:00', title: 'Workout', location: 'ride.bln Charlottenburg', address: 'ride.bln Charlottenburg, Lietzenburger Straße 86, Berlin', color: 0x666666 },
@@ -2016,20 +2016,20 @@
                     // Animate success message
                     const submitBtn = document.getElementById('rsvpSubmit');
                     const originalText = submitBtn.textContent;
-                    submitBtn.textContent = '✓ Confirmed!';
-                    submitBtn.style.background = 'linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0.15) 100%)';
-                    submitBtn.style.borderColor = 'rgba(76, 175, 80, 0.5)';
+                    submitBtn.textContent = '✓ LOCKED IN';
+                    submitBtn.style.background = '#FFFFFF';
+                    submitBtn.style.color = '#000000';
 
-                    // Close after delay
+                    // Keep modal open for 4 seconds so user can click calendar buttons
                     setTimeout(() => {
                         closeRSVPModal();
                         // Reset button
                         setTimeout(() => {
                             submitBtn.textContent = originalText;
                             submitBtn.style.background = '';
-                            submitBtn.style.borderColor = '';
+                            submitBtn.style.color = '';
                         }, 500);
-                    }, 1500);
+                    }, 4000);
                 } else {
                     throw new Error(data.error || 'Failed to save RSVP');
                 }
