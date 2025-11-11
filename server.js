@@ -24,6 +24,12 @@ async function initializeGoogleSheets() {
         // In production (Northflank), use environment variable
         if (process.env.GOOGLE_CREDENTIALS_JSON) {
             const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+
+            // FIX: Ensure private_key has actual newlines, not \n strings
+            if (credentials.private_key) {
+                credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+            }
+
             auth = new google.auth.GoogleAuth({
                 credentials: credentials,
                 scopes: ['https://www.googleapis.com/auth/spreadsheets'],
