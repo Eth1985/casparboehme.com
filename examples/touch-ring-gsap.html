@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch Ring - GSAP Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            color: #e8e8e8;
+            overflow: hidden;
+        }
+
+        .dial-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+        }
+
+        /* Time Ring with Gradient Glow */
+        .time-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            height: 380px;
+        }
+
+        .time-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+            filter: drop-shadow(0 0 0 transparent);
+            transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .time-ring.glowing svg {
+            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.3));
+        }
+
+        .time-segment {
+            fill: none;
+            stroke: rgba(59, 130, 246, 0.08);
+            stroke-width: 45;
+            stroke-linecap: round;
+            transform-origin: center;
+        }
+
+        /* Records Ring */
+        .records-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .record {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            will-change: transform;
+        }
+
+        .record-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(30%) brightness(0.9);
+        }
+
+        .record-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent 60%);
+            display: flex;
+            align-items: flex-end;
+            padding: 0.75rem;
+            pointer-events: none;
+        }
+
+        .record-glow {
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .record-time {
+            font-size: 0.6rem;
+            color: #888;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+        }
+
+        .record-title {
+            font-size: 0.7rem;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        /* Center Display */
+        .center-info {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .center-time {
+            font-size: 3rem;
+            font-weight: 200;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .center-label {
+            font-size: 0.7rem;
+            color: #555;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-top: 0.75rem;
+            opacity: 0.6;
+        }
+
+        .center-event {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.5rem;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="dial-container">
+        <!-- Time Ring -->
+        <div class="time-ring" id="timeRing">
+            <svg viewBox="0 0 200 200">
+                <defs>
+                    <linearGradient id="segmentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:rgba(59, 130, 246, 0.8);stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:rgba(139, 92, 246, 0.8);stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle class="time-segment" id="timeSegment0" cx="100" cy="100" r="77.5"
+                    stroke-dasharray="68 290" stroke-dashoffset="0" />
+                <circle class="time-segment" id="timeSegment1" cx="100" cy="100" r="77.5"
+                    stroke-dasharray="68 290" stroke-dashoffset="-68" />
+                <circle class="time-segment" id="timeSegment2" cx="100" cy="100" r="77.5"
+                    stroke-dasharray="68 290" stroke-dashoffset="-136" />
+                <circle class="time-segment" id="timeSegment3" cx="100" cy="100" r="77.5"
+                    stroke-dasharray="68 290" stroke-dashoffset="-204" />
+                <circle class="time-segment" id="timeSegment4" cx="100" cy="100" r="77.5"
+                    stroke-dasharray="68 290" stroke-dashoffset="-272" />
+                <circle class="time-segment" id="timeSegment5" cx="100" cy="100" r="77.5"
+                    stroke-dasharray="68 290" stroke-dashoffset="-340" />
+                <circle class="time-segment" id="timeSegment6" cx="100" cy="100" r="77.5"
+                    stroke-dasharray="68 290" stroke-dashoffset="-408" />
+            </svg>
+        </div>
+
+        <!-- Center Display -->
+        <div class="center-info">
+            <div class="center-time" id="centerTime">20:00</div>
+            <div class="center-event" id="centerEvent">Bowling</div>
+            <div class="center-label">Touch and hold events</div>
+        </div>
+
+        <!-- Records Ring -->
+        <div class="records-ring" id="recordsRing"></div>
+    </div>
+
+    <!-- GSAP Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        const events = [
+            { time: '20:00', title: 'Bowling', image: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?w=200&h=200&fit=crop' },
+            { time: '22:30', title: 'Oldtimer', image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=200&h=200&fit=crop' },
+            { time: '11:30', title: 'Brunch', image: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=200&h=200&fit=crop' },
+            { time: '14:00', title: 'Art Walk', image: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=200&h=200&fit=crop' },
+            { time: '19:00', title: 'Workout', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&h=200&fit=crop' },
+            { time: '20:30', title: 'Dinner', image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=200&h=200&fit=crop' },
+            { time: '23:00', title: 'Drinks', image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=200&h=200&fit=crop' }
+        ];
+
+        let currentActive = null;
+
+        // Position records
+        function positionRecords() {
+            const container = document.getElementById('recordsRing');
+            const radius = 250;
+            const centerX = 300;
+            const centerY = 300;
+
+            events.forEach((event, index) => {
+                const angle = (index / events.length) * Math.PI * 2 - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const record = document.createElement('div');
+                record.className = 'record';
+                record.dataset.index = index;
+
+                gsap.set(record, {
+                    left: x,
+                    top: y,
+                    xPercent: -50,
+                    yPercent: -50
+                });
+
+                record.innerHTML = `
+                    <div class="record-glow"></div>
+                    <img class="record-image" src="${event.image}" alt="${event.title}">
+                    <div class="record-overlay">
+                        <div>
+                            <div class="record-time">${event.time}</div>
+                            <div class="record-title">${event.title}</div>
+                        </div>
+                    </div>
+                `;
+
+                let pressTimer;
+
+                const onPress = () => {
+                    pressTimer = setTimeout(() => {
+                        activateRecord(index, record);
+                    }, 150);
+                };
+
+                const onRelease = () => {
+                    clearTimeout(pressTimer);
+                    deactivateRecord(index, record);
+                };
+
+                // Hover effect
+                record.addEventListener('mouseenter', () => {
+                    if (currentActive !== index) {
+                        gsap.to(record, {
+                            scale: 1.08,
+                            duration: 0.4,
+                            ease: 'power2.out'
+                        });
+                        gsap.to(record.querySelector('.record-image'), {
+                            filter: 'grayscale(0%) brightness(1.1)',
+                            duration: 0.4
+                        });
+                    }
+                });
+
+                record.addEventListener('mouseleave', () => {
+                    if (currentActive !== index) {
+                        gsap.to(record, {
+                            scale: 1,
+                            duration: 0.4,
+                            ease: 'power2.out'
+                        });
+                        gsap.to(record.querySelector('.record-image'), {
+                            filter: 'grayscale(30%) brightness(0.9)',
+                            duration: 0.4
+                        });
+                    }
+                });
+
+                record.addEventListener('mousedown', onPress);
+                record.addEventListener('mouseup', onRelease);
+                record.addEventListener('mouseleave', onRelease);
+                record.addEventListener('touchstart', onPress);
+                record.addEventListener('touchend', onRelease);
+
+                container.appendChild(record);
+            });
+        }
+
+        function activateRecord(index, element) {
+            if (currentActive === index) return;
+
+            // Deactivate previous
+            if (currentActive !== null) {
+                const prevRecord = document.querySelector(`.record[data-index="${currentActive}"]`);
+                if (prevRecord) {
+                    gsap.to(prevRecord, { scale: 1, duration: 0.5, ease: 'power3.out' });
+                    gsap.to(prevRecord.querySelector('.record-glow'), { opacity: 0, duration: 0.5 });
+                }
+
+                const prevSegment = document.getElementById(`timeSegment${currentActive}`);
+                if (prevSegment) {
+                    gsap.to(prevSegment, {
+                        attr: { stroke: 'rgba(59, 130, 246, 0.08)' },
+                        strokeWidth: 45,
+                        duration: 0.6,
+                        ease: 'power2.out'
+                    });
+                }
+            }
+
+            currentActive = index;
+
+            // Activate record with spring physics
+            gsap.to(element, {
+                scale: 1.2,
+                duration: 0.6,
+                ease: 'elastic.out(1, 0.5)'
+            });
+
+            gsap.to(element.querySelector('.record-glow'), {
+                opacity: 1,
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+
+            gsap.to(element.querySelector('.record-image'), {
+                filter: 'grayscale(0%) brightness(1.2)',
+                duration: 0.4
+            });
+
+            // Activate time segment with gradient
+            const segment = document.getElementById(`timeSegment${index}`);
+            if (segment) {
+                gsap.to(segment, {
+                    attr: { stroke: 'url(#segmentGradient)' },
+                    strokeWidth: 50,
+                    duration: 0.6,
+                    ease: 'power2.out'
+                });
+            }
+
+            // Glow effect on ring
+            document.getElementById('timeRing').classList.add('glowing');
+
+            // Animate center time
+            const centerTime = document.getElementById('centerTime');
+            const centerEvent = document.getElementById('centerEvent');
+
+            gsap.to(centerTime, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.2,
+                onComplete: () => {
+                    centerTime.textContent = events[index].time;
+                    gsap.to(centerTime, {
+                        opacity: 1,
+                        scale: 1,
+                        duration: 0.5,
+                        ease: 'back.out(1.7)'
+                    });
+                }
+            });
+
+            gsap.to(centerEvent, {
+                opacity: 0,
+                y: -5,
+                duration: 0.2,
+                onComplete: () => {
+                    centerEvent.textContent = events[index].title;
+                    gsap.to(centerEvent, {
+                        opacity: 0.8,
+                        y: 0,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    });
+                }
+            });
+
+            // Haptic
+            if (navigator.vibrate) navigator.vibrate(12);
+        }
+
+        function deactivateRecord(index, element) {
+            if (currentActive !== index) return;
+            currentActive = null;
+
+            // Smooth deactivation
+            gsap.to(element, {
+                scale: 1,
+                duration: 0.5,
+                ease: 'power3.out'
+            });
+
+            gsap.to(element.querySelector('.record-glow'), {
+                opacity: 0,
+                duration: 0.4
+            });
+
+            gsap.to(element.querySelector('.record-image'), {
+                filter: 'grayscale(30%) brightness(0.9)',
+                duration: 0.4
+            });
+
+            // Deactivate segment
+            const segment = document.getElementById(`timeSegment${index}`);
+            if (segment) {
+                gsap.to(segment, {
+                    attr: { stroke: 'rgba(59, 130, 246, 0.08)' },
+                    strokeWidth: 45,
+                    duration: 0.6,
+                    ease: 'power2.out'
+                });
+            }
+
+            document.getElementById('timeRing').classList.remove('glowing');
+
+            // Hide center info
+            gsap.to('#centerTime', {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.3
+            });
+
+            gsap.to('#centerEvent', {
+                opacity: 0,
+                y: -5,
+                duration: 0.3
+            });
+        }
+
+        // Initialize
+        positionRecords();
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>

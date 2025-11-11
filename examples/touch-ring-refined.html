@@ -246,7 +246,7 @@
             transform: translateY(-1px);
         }
 
-        /* RSVP Modal - Brutalist Style */
+        /* RSVP Modal */
         .rsvp-modal {
             position: fixed;
             inset: 0;
@@ -256,7 +256,8 @@
             justify-content: center;
             opacity: 0;
             pointer-events: none;
-            background: #0a0a0a;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
         }
 
         .rsvp-modal.show {
@@ -265,144 +266,143 @@
         }
 
         .rsvp-content {
-            max-width: 600px;
-            width: 90vw;
-            text-align: left;
+            max-width: 90vw;
+            width: 460px;
+            text-align: center;
             position: relative;
-            padding: 60px 20px 40px 20px;
-            background: #0a0a0a;
-            border-radius: 0 !important;
-        }
-
-        .rsvp-close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            color: #FFFFFF;
-            font-size: 32px;
-            font-weight: 300;
-            cursor: pointer;
-            padding: 0;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.2s;
-            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-            z-index: 10;
-        }
-
-        .rsvp-close-btn:hover {
-            opacity: 0.7;
+            padding: 3.5rem 3rem;
+            background: #000000;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .rsvp-event-title {
-            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-            font-size: clamp(48px, 10vw, 100px);
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: clamp(3.2rem, 8vw, 5rem);
             font-weight: 900;
-            margin-bottom: 60px;
-            letter-spacing: -0.02em;
-            color: #FFFFFF;
-            line-height: 0.95;
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            line-height: 0.92;
             position: relative;
             z-index: 1;
         }
 
         .rsvp-event-time {
-            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-            font-size: 18px;
-            color: #FFFFFF;
-            margin-bottom: 80px;
-            line-height: 1.8;
-            border-left: 2px solid #FFFFFF;
-            padding-left: 20px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: clamp(1rem, 3vw, 1.15rem);
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.05em;
+            font-weight: 600;
             position: relative;
             z-index: 1;
-            font-weight: 700;
         }
 
         .rsvp-form {
-            margin-bottom: 40px;
+            margin-bottom: 2rem;
         }
 
         .rsvp-input {
             width: 100%;
-            padding: 16px 8px;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid #FFFFFF;
-            border-radius: 0 !important;
-            color: #FFFFFF;
-            font-size: 18px;
-            font-family: 'Courier New', 'Courier', monospace;
-            margin-bottom: 40px;
-            transition: none;
+            padding: 1.3rem 1.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
             position: relative;
             z-index: 1;
         }
 
         .rsvp-input:focus {
             outline: none;
-            border-bottom-color: #FFFFFF;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .rsvp-input::placeholder {
-            color: #666666;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+
+        .rsvp-input:hover {
+            border-color: rgba(255, 255, 255, 0.35);
         }
 
         .rsvp-buttons {
             display: flex;
-            gap: 0;
+            gap: 1rem;
             justify-content: center;
         }
 
         .rsvp-submit {
             width: 100%;
-            padding: 20px;
-            border: none;
-            border-radius: 0 !important;
-            font-size: 20px;
-            letter-spacing: 0.05em;
+        }
+
+        .rsvp-submit, .rsvp-close {
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             cursor: pointer;
-            transition: opacity 0.2s;
-            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-            font-weight: 900;
+            transition: all 0.3s ease;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-weight: 800;
             position: relative;
             z-index: 1;
-            background: #FFFFFF;
-            color: #000000;
-            margin-bottom: 40px;
+        }
+
+        .rsvp-submit {
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
         }
 
         .rsvp-submit:hover {
-            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
         }
 
         .rsvp-submit:active {
+            transform: translateY(0);
+        }
+
+        .rsvp-close {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .rsvp-close:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .rsvp-close:active {
             transform: scale(0.98);
         }
 
-        /* Calendar buttons */
+        /* Calendar button */
         .rsvp-calendar {
             width: 100%;
-            padding: 16px;
-            background: transparent;
-            border: 1px solid #FFFFFF;
-            border-radius: 0 !important;
-            color: #FFFFFF;
-            font-size: 12px;
-            letter-spacing: 0.1em;
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
             cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Courier New', 'Courier', monospace;
-            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-weight: 800;
             text-transform: uppercase;
             position: relative;
             z-index: 1;
@@ -410,42 +410,39 @@
         }
 
         .rsvp-calendar:hover {
-            background: #FFFFFF;
-            color: #000000;
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
         }
 
         .rsvp-calendar:active {
-            transform: scale(0.98);
+            transform: translateY(0) scale(0.98);
         }
 
         /* Mobile optimizations */
         @media (max-width: 768px) {
             .rsvp-content {
-                padding: 20px 16px;
+                width: 95vw;
+                padding: 2.5rem 1.8rem;
             }
 
             .rsvp-event-title {
-                font-size: clamp(48px, 10vw, 64px);
-                margin-bottom: 40px;
+                font-size: clamp(2rem, 8vw, 2.5rem);
             }
 
-            .rsvp-event-time {
-                font-size: 16px;
-                margin-bottom: 60px;
+            .rsvp-buttons {
+                flex-direction: column;
+                gap: 0.8rem;
             }
 
-            .rsvp-input {
-                font-size: 16px;
-            }
-
-            .rsvp-submit {
-                font-size: 16px;
-                padding: 18px;
+            .rsvp-submit, .rsvp-close {
+                width: 100%;
+                padding: 1.1rem 2rem;
             }
 
             .rsvp-calendar {
-                font-size: 11px;
-                padding: 14px;
+                font-size: 0.9rem;
+                padding: 1.2rem;
             }
         }
 
@@ -514,23 +511,26 @@
     <!-- RSVP Modal -->
     <div class="rsvp-modal" id="rsvpModal">
         <div class="rsvp-content">
-            <button class="rsvp-close-btn" id="rsvpCloseBtn" aria-label="Close">×</button>
             <h2 class="rsvp-event-title" id="modalEventTitle">Bowling</h2>
-            <div class="rsvp-event-time" id="modalEventTime">November 12<br>20:00<br>Address here</div>
+            <p class="rsvp-event-time" id="modalEventTime">November 12 • 20:00 • Berolina</p>
 
             <form class="rsvp-form" id="rsvpForm">
-                <input type="text" class="rsvp-input" placeholder="YOUR NAME" required id="rsvpName" autocomplete="name">
-                <input type="text" class="rsvp-input" placeholder="PLUS ONES (OPTIONAL)" id="rsvpPlusOnes" autocomplete="off">
+                <input type="text" class="rsvp-input" placeholder="Your name" required id="rsvpName">
+                <input type="text" class="rsvp-input" placeholder="Plus ones (optional)" id="rsvpPlusOnes">
             </form>
 
             <div class="rsvp-buttons">
-                <button class="rsvp-submit" id="rsvpSubmit">I'M COMING</button>
+                <button class="rsvp-submit" id="rsvpSubmit">I'm Coming!</button>
             </div>
 
-            <div style="border-top: 1px solid #FFFFFF; padding-top: 40px; margin-bottom: 0;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button class="rsvp-calendar" id="addToGoogleCal">+ GOOGLE</button>
-                    <button class="rsvp-calendar" id="addToAppleCal">+ APPLE</button>
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1); position: relative; z-index: 1;">
+                <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                    <button class="rsvp-calendar" id="addToGoogleCal" style="flex: 1; min-width: 140px;">
+                        📅 Google Calendar
+                    </button>
+                    <button class="rsvp-calendar" id="addToAppleCal" style="flex: 1; min-width: 140px;">
+                         Apple Calendar
+                    </button>
                 </div>
             </div>
         </div>
@@ -554,7 +554,7 @@
     <script>
         const events = [
             { date: 'November 12', time: '20:00', endTime: '22:00', title: 'Bowling', location: 'Berolina', address: 'Berolina, Kleiststraße 3-6, 10787 Berlin', color: 0x666666 },
-            { date: 'November 12', time: '22:30', endTime: '23:59', title: 'rein feiern', location: 'New Oldtimer', address: 'Lietzenburger Str. 12, 10789 Berlin', color: 0x666666 },
+            { date: 'November 12', time: '22:30', endTime: '23:59', title: 'New Oldtimer', location: 'New Oldtimer', address: 'Lietzenburger Str. 12, 10789 Berlin', color: 0x666666 },
             { date: 'November 13', time: '11:30', endTime: '14:00', title: 'Brunch', location: 'Cafe Einstein Mommseneck', address: 'Cafe Einstein Mommseneck, Mommsenstraße 45, 10629 Berlin', color: 0x666666 },
             { date: 'November 13', time: '14:00', endTime: '18:00', title: 'Walk & Gemäldegalerie', location: 'Gemäldegalerie', address: 'Matthäikirchplatz, 10785 Berlin', color: 0x666666 },
             { date: 'November 13', time: '19:00', endTime: '20:00', title: 'Workout', location: 'ride.bln Charlottenburg', address: 'ride.bln Charlottenburg, Lietzenburger Straße 86, Berlin', color: 0x666666 },
@@ -1746,19 +1746,13 @@
             const titleElement = document.getElementById('modalEventTitle');
             titleElement.textContent = event.title;
 
-            document.getElementById('modalEventTime').innerHTML = `${event.date}<br>${event.time}<br>${event.address}`;
+            document.getElementById('modalEventTime').textContent = `${event.date} • ${event.time} • ${event.location}`;
 
             const modal = document.getElementById('rsvpModal');
             const content = document.querySelector('.rsvp-content');
             const time = document.getElementById('modalEventTime');
             const inputs = document.querySelectorAll('.rsvp-input');
             const buttons = document.querySelectorAll('.rsvp-submit, #addToGoogleCal, #addToAppleCal');
-
-            // RESET BUTTON STATE - FIX for stuck "LOCKED IN" text
-            const submitBtn = document.getElementById('rsvpSubmit');
-            submitBtn.textContent = "I'M COMING";
-            submitBtn.style.background = '';
-            submitBtn.style.color = '';
 
             // Reset states
             gsap.set(content, { scale: 0.8, opacity: 0 });
@@ -1842,6 +1836,61 @@
             });
         }
 
+        // Success animation overlay on RSVP submit
+        function createConfetti() {
+            // Create fullscreen overlay with success animation
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 200;
+                opacity: 0;
+                cursor: pointer;
+            `;
+
+            const animGif = document.createElement('img');
+            animGif.src = '/success-animation.gif';
+            animGif.style.cssText = `
+                width: 90vmin;
+                height: 90vmin;
+                object-fit: cover;
+                border-radius: 20px;
+                transform: scale(0.8);
+            `;
+
+            overlay.appendChild(animGif);
+            document.body.appendChild(overlay);
+
+            // Fade in overlay and scale up animation
+            gsap.to(overlay, {
+                opacity: 1,
+                duration: 0.4,
+                ease: 'power2.out'
+            });
+
+            gsap.to(animGif, {
+                scale: 1,
+                duration: 0.6,
+                ease: 'back.out(1.2)'
+            });
+
+            // Auto-dismiss after 3 seconds or click to dismiss
+            const dismiss = () => {
+                gsap.to(overlay, {
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: 'power2.in',
+                    onComplete: () => overlay.remove()
+                });
+            };
+
+            overlay.addEventListener('click', dismiss);
+            setTimeout(dismiss, 3000);
+        }
 
         // Generate ICS calendar file
         function generateCalendarFile(event) {
@@ -2042,6 +2091,8 @@
                         timestamp: new Date().toISOString()
                     });
 
+                    // Celebration confetti!
+                    createConfetti();
 
                     // Download calendar file automatically on RSVP
                     downloadCalendarFile();
@@ -2049,20 +2100,20 @@
                     // Animate success message
                     const submitBtn = document.getElementById('rsvpSubmit');
                     const originalText = submitBtn.textContent;
-                    submitBtn.textContent = '✓ LOCKED IN';
-                    submitBtn.style.background = '#FFFFFF';
-                    submitBtn.style.color = '#000000';
+                    submitBtn.textContent = '✓ Confirmed!';
+                    submitBtn.style.background = 'linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0.15) 100%)';
+                    submitBtn.style.borderColor = 'rgba(76, 175, 80, 0.5)';
 
-                    // Keep modal open for 4 seconds so user can click calendar buttons
+                    // Close after delay
                     setTimeout(() => {
                         closeRSVPModal();
                         // Reset button
                         setTimeout(() => {
                             submitBtn.textContent = originalText;
                             submitBtn.style.background = '';
-                            submitBtn.style.color = '';
+                            submitBtn.style.borderColor = '';
                         }, 500);
-                    }, 4000);
+                    }, 1500);
                 } else {
                     throw new Error(data.error || 'Failed to save RSVP');
                 }
@@ -2076,7 +2127,6 @@
         document.getElementById('rsvpSubmit').addEventListener('click', submitRSVP);
         document.getElementById('addToGoogleCal').addEventListener('click', addToGoogleCalendar);
         document.getElementById('addToAppleCal').addEventListener('click', addToAppleCalendar);
-        document.getElementById('rsvpCloseBtn').addEventListener('click', closeRSVPModal);
 
         document.getElementById('rsvpForm').addEventListener('submit', (e) => {
             e.preventDefault();

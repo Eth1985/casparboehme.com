@@ -4,3 +4,4 @@ npm-debug.log
 *.tar.gz
 rsvps.db
 .env
+google-credentials.json
