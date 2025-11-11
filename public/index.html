@@ -2014,10 +2014,24 @@
                 return;
             }
 
+            // SAFETY CHECK: Prevent duplicate submissions
+            const submitBtn = document.getElementById('rsvpSubmit');
+            if (submitBtn.disabled) {
+                console.log('⚠️ Duplicate submission prevented');
+                return;
+            }
+
             // Create event ID from title (e.g., "bowling", "brunch")
             const eventId = currentEventForRSVP.title.toLowerCase().replace(/\s+/g, '-');
 
+            // Disable button during submission
+            submitBtn.disabled = true;
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'SAVING...';
+
             try {
+                console.log('📤 Submitting RSVP:', { eventId, name, plusOnes: parseInt(plusOnes) || 0 });
+
                 // Send RSVP to backend
                 const response = await fetch('/api/rsvps', {
                     method: 'POST',
@@ -2032,23 +2046,20 @@
                 });
 
                 const data = await response.json();
+                console.log('📥 Response:', data);
 
                 if (data.success) {
-                    console.log('✅ RSVP Saved to Database:', {
-                        id: data.id,
+                    console.log('✅ RSVP Saved Successfully:', {
                         event: currentEventForRSVP.title,
                         name: name,
                         plusOnes: plusOnes,
                         timestamp: new Date().toISOString()
                     });
 
-
                     // Download calendar file automatically on RSVP
                     downloadCalendarFile();
 
                     // Animate success message
-                    const submitBtn = document.getElementById('rsvpSubmit');
-                    const originalText = submitBtn.textContent;
                     submitBtn.textContent = '✓ LOCKED IN';
                     submitBtn.style.background = '#FFFFFF';
                     submitBtn.style.color = '#000000';
@@ -2056,11 +2067,12 @@
                     // Keep modal open for 4 seconds so user can click calendar buttons
                     setTimeout(() => {
                         closeRSVPModal();
-                        // Reset button
+                        // Reset button state completely
                         setTimeout(() => {
-                            submitBtn.textContent = originalText;
+                            submitBtn.textContent = "I'M COMING";
                             submitBtn.style.background = '';
                             submitBtn.style.color = '';
+                            submitBtn.disabled = false;
                         }, 500);
                     }, 4000);
                 } else {
@@ -2068,7 +2080,11 @@
                 }
             } catch (error) {
                 console.error('❌ RSVP Error:', error);
-                alert('Sorry, there was an error saving your RSVP. Please try again.');
+                alert('Sorry, there was an error saving your RSVP. Please try again or contact support.');
+
+                // Re-enable button on error
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
         }
 
