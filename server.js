@@ -21,21 +21,27 @@ async function initializeGoogleSheets() {
     try {
         let auth;
 
-        // In production (Northflank), use environment variable
-        if (process.env.GOOGLE_CREDENTIALS_JSON) {
+        // Try multiple methods to load credentials
+        if (process.env.GOOGLE_CREDENTIALS_BASE64) {
+            // Method 1: Base64 encoded (most reliable)
+            const decoded = Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, 'base64').toString('utf8');
+            const credentials = JSON.parse(decoded);
+            auth = new google.auth.GoogleAuth({
+                credentials: credentials,
+                scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+            });
+        } else if (process.env.GOOGLE_CREDENTIALS_JSON) {
+            // Method 2: JSON string (try to fix newlines)
             const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
-
-            // FIX: Ensure private_key has actual newlines, not \n strings
             if (credentials.private_key) {
                 credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
             }
-
             auth = new google.auth.GoogleAuth({
                 credentials: credentials,
                 scopes: ['https://www.googleapis.com/auth/spreadsheets'],
             });
         } else {
-            // In development, use local file
+            // Method 3: Local file (development)
             auth = new google.auth.GoogleAuth({
                 keyFile: './google-credentials.json',
                 scopes: ['https://www.googleapis.com/auth/spreadsheets'],
