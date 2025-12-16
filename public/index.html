@@ -669,13 +669,13 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Main ring - dark forest green for Christmas
+        // Main ring - sophisticated silver for Christmas
         const ringGeometry = new THREE.TorusGeometry(ringRadius, 0.04, 32, 100);
         const ringMaterial = new THREE.MeshStandardMaterial({
-            color: 0x0B4D0B,
+            color: 0xC0C0C0,
             metalness: 0.8,
             roughness: 0.3,
-            emissive: 0x0B4D0B,
+            emissive: 0xC0C0C0,
             emissiveIntensity: 0.15
         });
         const ring = new THREE.Mesh(ringGeometry, ringMaterial);
@@ -694,8 +694,8 @@
                 ringRadius - 0.3, 0.12, 16, 32, segmentAngle
             );
             const segmentMaterial = new THREE.MeshStandardMaterial({
-                color: 0xC0C0C0,  // Silver metallic
-                emissive: 0xC0C0C0,
+                color: 0x0B4D0B,  // Dark metallic green
+                emissive: 0x0B4D0B,
                 emissiveIntensity: 0.1,
                 transparent: true,
                 opacity: 0.3,
