@@ -1340,6 +1340,13 @@
             console.log('DEBUG openRSVPModal - event.youtubeUrl:', event.youtubeUrl);
             console.log('DEBUG openRSVPModal - Has youtubeUrl?', !!event.youtubeUrl);
 
+            // VISIBLE DEBUG on page
+            if (event.youtubeUrl) {
+                timeHTML += `<br><br><div style="color: lime; font-weight: bold;">DEBUG: youtubeUrl found = ${event.youtubeUrl}</div>`;
+            } else {
+                timeHTML += `<br><br><div style="color: red; font-weight: bold;">DEBUG: NO youtubeUrl property</div>`;
+            }
+
             // Add embedded YouTube video if present
             if (event.youtubeUrl) {
                 console.log('DEBUG - Adding YouTube iframe to timeHTML');
