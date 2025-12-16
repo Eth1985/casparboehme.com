@@ -1335,10 +1335,20 @@
 
             let timeHTML = `${event.date}<br>${event.time}<br>${event.address}`;
 
+            // DEBUG: Log event object and youtubeUrl property
+            console.log('DEBUG openRSVPModal - Event:', event);
+            console.log('DEBUG openRSVPModal - event.youtubeUrl:', event.youtubeUrl);
+            console.log('DEBUG openRSVPModal - Has youtubeUrl?', !!event.youtubeUrl);
+
             // Add embedded YouTube video if present
             if (event.youtubeUrl) {
+                console.log('DEBUG - Adding YouTube iframe to timeHTML');
                 timeHTML += `<br><br><iframe width="100%" height="200" src="https://www.youtube.com/embed/rgEP1niScLc?start=74&autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 8px; margin-top: 10px;"></iframe>`;
+            } else {
+                console.log('DEBUG - No youtubeUrl found, skipping iframe');
             }
+
+            console.log('DEBUG - Final timeHTML:', timeHTML);
 
             document.getElementById('modalEventTime').innerHTML = timeHTML;
 
