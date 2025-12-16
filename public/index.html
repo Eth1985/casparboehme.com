@@ -533,6 +533,48 @@
                 top: 3vh;
             }
         }
+
+        /* Steam effect for SPA event */
+        #steamContainer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        #steamContainer.active {
+            opacity: 1;
+        }
+
+        .steam {
+            position: absolute;
+            bottom: -10%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: riseSteam 8s ease-in-out infinite;
+        }
+
+        @keyframes riseSteam {
+            0% {
+                bottom: -10%;
+                opacity: 0;
+                transform: translateX(0) scale(1);
+            }
+            10% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.4;
+            }
+            100% {
+                bottom: 110%;
+                opacity: 0;
+                transform: translateX(var(--drift)) scale(1.5);
+            }
+        }
     </style>
 </head>
 <body>
@@ -541,6 +583,8 @@
     <!-- Dark overlay for better text readability inside ring -->
     <div class="ring-overlay"></div>
 
+    <!-- Steam effect container for SPA event -->
+    <div id="steamContainer"></div>
 
     <div class="ui-overlay">
         <div class="header">
@@ -1068,6 +1112,9 @@
             }
             ring.material = waterRippleMaterial;
 
+            // Activate steam effect
+            activateSteam();
+
             console.log('💧 Water ripple effect activated');
         }
 
@@ -1081,6 +1128,9 @@
                 ring.material = originalRingMaterial;
             }
 
+            // Deactivate steam effect
+            deactivateSteam();
+
             console.log('💧 Water ripple effect deactivated');
         }
 
@@ -1093,6 +1143,50 @@
 
             // Update time for animation
             waterRippleMaterial.uniforms.time.value += deltaTime * 0.001;
+        }
+
+        // Steam Effect for SPA Event
+        function createSteamParticles() {
+            const steamContainer = document.getElementById('steamContainer');
+            steamContainer.innerHTML = ''; // Clear existing particles
+
+            // Create multiple steam puffs with staggered delays
+            const numPuffs = 12;
+            for (let i = 0; i < numPuffs; i++) {
+                const steam = document.createElement('div');
+                steam.className = 'steam';
+
+                // Random horizontal position
+                const leftPos = Math.random() * 100;
+                steam.style.left = leftPos + '%';
+
+                // Random size
+                const size = 80 + Math.random() * 120;
+                steam.style.width = size + 'px';
+                steam.style.height = size * 1.2 + 'px';
+
+                // Random drift amount
+                const drift = (Math.random() - 0.5) * 100;
+                steam.style.setProperty('--drift', drift + 'px');
+
+                // Stagger animation start
+                steam.style.animationDelay = (i * 0.7) + 's';
+
+                steamContainer.appendChild(steam);
+            }
+        }
+
+        function activateSteam() {
+            const steamContainer = document.getElementById('steamContainer');
+            createSteamParticles();
+            steamContainer.classList.add('active');
+            console.log('💨 Steam effect activated');
+        }
+
+        function deactivateSteam() {
+            const steamContainer = document.getElementById('steamContainer');
+            steamContainer.classList.remove('active');
+            console.log('💨 Steam effect deactivated');
         }
 
         // Event 5: Silvester Buffet - Blue Fire System
