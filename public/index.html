@@ -599,12 +599,12 @@
     <script>
         const events = [
             { date: 'December 23', time: '19:00', endTime: '20:00', title: 'Luther & Wegner Dinner', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xFFD700 },
-            { date: 'December 23', time: '20:00', endTime: '22:00', title: 'Champagner BAR', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xF7E7CE },
+            { date: 'December 23', time: '20:00', endTime: '22:00', title: 'Champagner BAR', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xF7E7CE },  // Champagne
             { date: 'December 24', time: '18:00', endTime: '23:00', title: 'Weihnachten & Spiele', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xDC143C },
             { date: 'December 24', time: '23:00', endTime: '02:00', title: 'Kupferkanne', location: 'Kupferkanne', address: 'Kurfürstendamm 216, 10719 Berlin', color: 0x228B22 },
             { date: 'December 27', time: '12:00', endTime: '20:00', title: 'SPA', location: 'Location TBD', address: 'TBD', color: 0x666666 },
-            { date: 'December 31', time: '19:00', endTime: '23:00', title: 'Silvester: Buffet und Rituale', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xFFD700 },
-            { date: 'December 31', time: '23:00', endTime: '05:00', title: 'NYE Party', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xFFD700 }
+            { date: 'December 31', time: '19:00', endTime: '23:00', title: 'Silvester: Buffet und Rituale', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xF5F5DC },  // White gold
+            { date: 'December 31', time: '23:00', endTime: '05:00', title: 'NYE Party', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xB87333 }  // Copper
         ];
 
         // Scene setup
@@ -1129,9 +1129,13 @@
                 ease: 'elastic.out(1, 0.5)'
             });
 
+            // Christmas light blinking effect
             gsap.to(markers[index].material, {
-                emissiveIntensity: 0.8,
-                duration: 0.4
+                emissiveIntensity: 1.2,
+                duration: 0.5,
+                repeat: -1,
+                yoyo: true,
+                ease: 'power1.inOut'
             });
 
             // Update center info with GSAP
