@@ -1333,7 +1333,14 @@
             const titleElement = document.getElementById('modalEventTitle');
             titleElement.textContent = event.title;
 
-            document.getElementById('modalEventTime').innerHTML = `${event.date}<br>${event.time}<br>${event.address}`;
+            let timeHTML = `${event.date}<br>${event.time}<br>${event.address}`;
+
+            // Add YouTube link if present
+            if (event.youtubeUrl) {
+                timeHTML += `<br><br><a href="${event.youtubeUrl}" target="_blank" style="color: #D4AF37; text-decoration: none; font-weight: 600;">🎵 Watch Video</a>`;
+            }
+
+            document.getElementById('modalEventTime').innerHTML = timeHTML;
 
             const modal = document.getElementById('rsvpModal');
             const content = document.querySelector('.rsvp-content');
