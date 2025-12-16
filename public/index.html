@@ -717,19 +717,24 @@
             // Position events clockwise starting from top (12 o'clock position)
             const angle = Math.PI / 2 - (i / events.length) * Math.PI * 2;
 
-            // Visible sphere - realistic Christmas ornament
+            // Visible sphere - ULTRA-realistic Christmas ornament (Christbaum Kugel)
             const markerGeometry = new THREE.SphereGeometry(0.12, 64, 64);
             const beadColor = event.color;
             const markerMaterial = new THREE.MeshPhysicalMaterial({
                 color: beadColor,
                 emissive: beadColor,
-                emissiveIntensity: 0.2,
-                metalness: 1.0,
-                roughness: 0.05,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.1,
-                reflectivity: 1.0,
-                envMapIntensity: 2.0
+                emissiveIntensity: 0.15,
+                metalness: 1.0,            // Full metal
+                roughness: 0.02,           // Almost mirror finish
+                clearcoat: 1.0,            // Maximum gloss coating
+                clearcoatRoughness: 0.01,  // Near-perfect reflection
+                reflectivity: 1.0,         // Maximum reflectivity
+                envMapIntensity: 3.0,      // Strong environment reflection
+                iridescence: 0.3,          // Subtle rainbow sheen
+                iridescenceIOR: 1.3,       // Soap bubble effect
+                transmission: 0.1,         // Slight translucency
+                thickness: 0.5,            // Glass-like depth
+                ior: 1.5                   // Index of refraction (glass)
             });
 
             const marker = new THREE.Mesh(markerGeometry, markerMaterial);
@@ -1004,6 +1009,7 @@
         let previousMouseX = 0;
         let rotationVelocity = 0;
         let currentActive = null;
+        let blinkAnimation = null; // Track the blinking animation
 
         const raycaster = new THREE.Raycaster();
         raycaster.params.Mesh.threshold = 0.2; // Increase hit detection threshold
@@ -1068,6 +1074,12 @@
 
             // Deactivate previous
             if (currentActive !== null) {
+                // Kill the blinking animation
+                if (blinkAnimation) {
+                    blinkAnimation.kill();
+                    blinkAnimation = null;
+                }
+
                 gsap.to(segments[currentActive].material, {
                     emissiveIntensity: 0,
                     duration: 0.5
@@ -1078,7 +1090,7 @@
                     ease: 'power2.out'
                 });
                 gsap.to(markers[currentActive].material, {
-                    emissiveIntensity: 0.2,
+                    emissiveIntensity: 0.15,
                     duration: 0.4
                 });
 
