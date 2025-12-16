@@ -598,13 +598,13 @@
 
     <script>
         const events = [
-            { date: 'December 23', time: '19:00', endTime: '20:00', title: 'Luther & Wegner Dinner', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xFFD700 },
-            { date: 'December 23', time: '20:00', endTime: '22:00', title: 'Champagner BAR', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xF7E7CE },  // Champagne
-            { date: 'December 24', time: '18:00', endTime: '23:00', title: 'Weihnachten & Spiele', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xDC143C },
-            { date: 'December 24', time: '23:00', endTime: '02:00', title: 'Kupferkanne', location: 'Kupferkanne', address: 'Kurfürstendamm 216, 10719 Berlin', color: 0x228B22 },
-            { date: 'December 27', time: '12:00', endTime: '20:00', title: 'SPA', location: 'Location TBD', address: 'TBD', color: 0x666666 },
-            { date: 'December 31', time: '19:00', endTime: '23:00', title: 'Silvester: Buffet und Rituale', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xF5F5DC },  // White gold
-            { date: 'December 31', time: '23:00', endTime: '05:00', title: 'NYE Party', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xB87333 }  // Copper
+            { date: 'December 23', time: '19:00', endTime: '20:00', title: 'Luther & Wegner Dinner', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xD4AF37 },  // Sophisticated gold
+            { date: 'December 23', time: '20:00', endTime: '22:00', title: 'Champagner BAR', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xF4E4C1 },  // Champagne pearl
+            { date: 'December 24', time: '18:00', endTime: '23:00', title: 'Weihnachten & Spiele', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xC41E3A },  // Deep ruby red
+            { date: 'December 24', time: '23:00', endTime: '02:00', title: 'Kupferkanne', location: 'Kupferkanne', address: 'Kurfürstendamm 216, 10719 Berlin', color: 0x2C5F2D },  // Deep forest emerald
+            { date: 'December 27', time: '12:00', endTime: '20:00', title: 'SPA', location: 'Location TBD', address: 'TBD', color: 0xC0C0C0 },  // Polished silver
+            { date: 'December 31', time: '19:00', endTime: '23:00', title: 'Silvester: Buffet und Rituale', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xE8E5D2 },  // Platinum white gold
+            { date: 'December 31', time: '23:00', endTime: '05:00', title: 'NYE Party', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xB87333 }  // Rose copper
         ];
 
         // Scene setup
@@ -667,7 +667,52 @@
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
         container.appendChild(renderer.domElement);
+
+        // Create environment map for realistic reflections on glass ornaments
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        pmremGenerator.compileEquirectangularShader();
+
+        // Create a gradient environment texture (warm Christmas lights feeling)
+        const envScene = new THREE.Scene();
+        const envGeometry = new THREE.SphereGeometry(100, 64, 64);
+        const envMaterial = new THREE.ShaderMaterial({
+            side: THREE.BackSide,
+            vertexShader: `
+                varying vec3 vWorldPosition;
+                void main() {
+                    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                    vWorldPosition = worldPosition.xyz;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vWorldPosition;
+                void main() {
+                    vec3 direction = normalize(vWorldPosition);
+                    float gradient = direction.y * 0.5 + 0.5;
+
+                    // Warm golden top (Christmas lights), darker bottom
+                    vec3 topColor = vec3(1.0, 0.95, 0.8);  // Warm white/gold
+                    vec3 midColor = vec3(0.9, 0.85, 0.7);  // Warm beige
+                    vec3 bottomColor = vec3(0.2, 0.15, 0.1);  // Dark warm
+
+                    vec3 color = mix(bottomColor, midColor, smoothstep(0.0, 0.5, gradient));
+                    color = mix(color, topColor, smoothstep(0.5, 1.0, gradient));
+
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `
+        });
+
+        const envMesh = new THREE.Mesh(envGeometry, envMaterial);
+        envScene.add(envMesh);
+
+        const envCamera = new THREE.PerspectiveCamera(90, 1, 0.1, 100);
+        const envRT = pmremGenerator.fromScene(envScene);
+        scene.environment = envRT.texture;
 
         // Main ring - sophisticated silver for Christmas
         const ringGeometry = new THREE.TorusGeometry(ringRadius, 0.04, 32, 100);
@@ -723,18 +768,21 @@
             const markerMaterial = new THREE.MeshPhysicalMaterial({
                 color: beadColor,
                 emissive: beadColor,
-                emissiveIntensity: 0.15,
+                emissiveIntensity: 0.12,
                 metalness: 1.0,            // Full metal
-                roughness: 0.02,           // Almost mirror finish
+                roughness: 0.01,           // Near-mirror finish
                 clearcoat: 1.0,            // Maximum gloss coating
-                clearcoatRoughness: 0.01,  // Near-perfect reflection
+                clearcoatRoughness: 0.02,  // Slight texture on coating
                 reflectivity: 1.0,         // Maximum reflectivity
-                envMapIntensity: 3.0,      // Strong environment reflection
-                iridescence: 0.3,          // Subtle rainbow sheen
-                iridescenceIOR: 1.3,       // Soap bubble effect
-                transmission: 0.1,         // Slight translucency
-                thickness: 0.5,            // Glass-like depth
-                ior: 1.5                   // Index of refraction (glass)
+                envMapIntensity: 5.0,      // Dramatic environment reflection (boosted!)
+                iridescence: 0.5,          // More pronounced rainbow sheen
+                iridescenceIOR: 1.4,       // Stronger soap bubble effect
+                transmission: 0.15,        // More translucency for depth
+                thickness: 0.8,            // More glass-like depth
+                ior: 1.5,                  // Index of refraction (glass)
+                sheen: 0.5,                // Soft fabric-like sheen
+                sheenRoughness: 0.3,       // Texture on sheen
+                sheenColor: 0xffffff       // White sheen highlights
             });
 
             const marker = new THREE.Mesh(markerGeometry, markerMaterial);
@@ -755,17 +803,31 @@
             scene.add(marker);
         });
 
-        // Lighting - softer for mobile
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        // Enhanced lighting for realistic 3D Christbaum Kugeln
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
-        const pointLight = new THREE.PointLight(0xffffff, 0.8, 100);
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
+        // Key light - warm from above (like Christmas tree lights)
+        const keyLight = new THREE.PointLight(0xfff4e6, 1.2, 100);
+        keyLight.position.set(3, 4, 5);
+        scene.add(keyLight);
 
-        const fillLight = new THREE.PointLight(0xffffff, 0.3, 100);
-        fillLight.position.set(-5, -5, 3);
+        // Rim light - from behind to create depth
+        const rimLight = new THREE.PointLight(0xffffff, 0.8, 100);
+        rimLight.position.set(-3, 2, -5);
+        scene.add(rimLight);
+
+        // Fill light - subtle from side
+        const fillLight = new THREE.PointLight(0xffffff, 0.4, 100);
+        fillLight.position.set(-5, -2, 3);
         scene.add(fillLight);
+
+        // Accent light - for sparkle on ornaments
+        const accentLight = new THREE.SpotLight(0xffffff, 0.6);
+        accentLight.position.set(0, 3, 4);
+        accentLight.angle = Math.PI / 4;
+        accentLight.penumbra = 0.5;
+        scene.add(accentLight);
 
         // ========== CHRISTMAS EFFECTS SYSTEMS ==========
 
