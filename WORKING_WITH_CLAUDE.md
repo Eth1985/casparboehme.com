@@ -1,5 +1,75 @@
 # Working with Claude - Accountability Standards
 
+## 🚨 GIT SAFETY RULES - ABSOLUTE REQUIREMENTS
+
+**THESE RULES ARE NON-NEGOTIABLE. VIOLATION = CATASTROPHIC DATA LOSS.**
+
+### Before ANY git checkout, revert, reset, or destructive operation:
+
+1. **ALWAYS run `git status` first**
+   ```bash
+   git status  # Check for uncommitted changes
+   ```
+
+2. **If there are uncommitted changes:**
+   - **STOP IMMEDIATELY**
+   - Warn the user: "There are uncommitted changes that will be lost"
+   - Ask: "Should I commit these changes first?"
+   - **NEVER proceed without explicit confirmation**
+
+3. **Before destructive operations, ALWAYS create a backup:**
+   ```bash
+   # Create backup branch
+   git branch backup-$(date +%Y%m%d-%H%M%S)
+
+   # OR copy file manually
+   cp public/index.html public/index.html.backup-$(date +%Y%m%d-%H%M%S)
+   ```
+
+4. **Document what will be lost:**
+   ```bash
+   git diff HEAD  # Show what changes will be destroyed
+   ```
+
+5. **Get explicit user confirmation before executing destructive command**
+
+### NEVER:
+- ❌ Run `git checkout HEAD -- file` without checking git status first
+- ❌ Run `git reset --hard` without warning about uncommitted work
+- ❌ Assume work has been committed
+- ❌ Execute destructive git commands without backup
+- ❌ Proceed when user says "go back to previous version" without clarifying which version
+
+### Example of CORRECT workflow:
+
+```bash
+# User says: "revert index.html to previous version"
+
+# Step 1: Check status
+git status
+
+# Step 2: If uncommitted changes exist
+# OUTPUT: "⚠️  WARNING: index.html has uncommitted changes that will be LOST if we revert.
+#          Would you like me to:
+#          1. Commit these changes first
+#          2. Create a backup copy
+#          3. Proceed anyway and lose the changes"
+
+# Step 3: Only after user confirms, execute
+git checkout HEAD -- public/index.html
+```
+
+### Recent Catastrophic Incident:
+
+**Dec 16, 2025 - Complete loss of Christmas website version**
+- **What happened**: Ran `git checkout HEAD -- public/index.html` without checking git status
+- **Result**: Lost 2+ hours of Christmas/NYE website development
+- **Why catastrophic**: No backup, no commit, no warning to user
+- **Prevention**: Added these mandatory git safety rules
+- **NEVER AGAIN**: This section exists to prevent repeat
+
+---
+
 ## Time Estimates
 
 **NEVER underestimate deployment time.** Real-world timing:

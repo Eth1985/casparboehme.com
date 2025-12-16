@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Holiday Season with Caspar</title>
+    <title>40 Hours with Caspar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -25,42 +25,17 @@
             transition: background 0.8s ease;
         }
 
-        /* Background images for Christmas events */
-        body.kupferkanne-active {
-            background: #0a0a0a url('/kupferkanne.jpg') center/cover fixed;
+        /* Background image for Gemäldegalerie event */
+        body.sculpture-active {
+            background: #0a0a0a url('/sculpture.jpg') center/cover;
+            background-blend-mode: multiply;
         }
 
-        body.kupferkanne-active::before {
+        body.sculpture-active::before {
             content: '';
             position: fixed;
             inset: 0;
-            background: rgba(10, 10, 10, 0.4);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        body.sauna-active {
-            background: #0a0a0a url('/sauna-photo.jpg') center/cover fixed;
-        }
-
-        body.sauna-active::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 10, 10, 0.4);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        body.dinner-for-one-active {
-            background: #0a0a0a url('/dinner-for-one.jpg') center/cover fixed;
-        }
-
-        body.dinner-for-one-active::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 10, 10, 0.4);
+            background: rgba(10, 10, 10, 0.6);
             pointer-events: none;
             z-index: 1;
         }
@@ -100,8 +75,8 @@
             transition: background 0.5s ease;
         }
 
-        /* Stronger overlay for dinner plate to ensure text readability */
-        .ring-overlay.dinner-plate-active {
+        /* Stronger overlay for brunch to ensure text readability */
+        .ring-overlay.brunch-active {
             background: radial-gradient(circle, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.92) 50%, rgba(10, 10, 10, 0.3) 70%);
         }
 
@@ -112,17 +87,17 @@
             }
         }
 
-        /* Christmas emoji particles */
-        .christmas-emoji {
+        /* Kiss emoji particles */
+        .kiss-emoji {
             position: fixed;
             font-size: 3rem;
             pointer-events: none;
             z-index: 15;
-            animation: christmas-float 3s ease-out forwards;
+            animation: kiss-float 3s ease-out forwards;
             user-select: none;
         }
 
-        @keyframes christmas-float {
+        @keyframes kiss-float {
             0% {
                 opacity: 0;
                 transform: translate(0, 0) scale(0.5) rotate(0deg);
@@ -139,17 +114,17 @@
             }
         }
 
-        /* Beer emoji particles */
-        .beer-emoji {
+        /* Chinese emoji particles */
+        .chinese-emoji {
             position: fixed;
             font-size: 3rem;
             pointer-events: none;
             z-index: 15;
-            animation: beer-float 3s ease-out forwards;
+            animation: chinese-float 3s ease-out forwards;
             user-select: none;
         }
 
-        @keyframes beer-float {
+        @keyframes chinese-float {
             0% {
                 opacity: 0;
                 transform: translate(0, 0) scale(0.5) rotate(0deg);
@@ -164,26 +139,6 @@
                 opacity: 0;
                 transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rotate));
             }
-        }
-
-        /* YouTube video backgrounds */
-        .youtube-video-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100vw;
-            min-height: 100vh;
-            width: auto;
-            height: auto;
-            z-index: 0;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-        }
-
-        .youtube-video-bg.active {
-            opacity: 1;
         }
 
         /* Header with sophisticated animation */
@@ -544,7 +499,7 @@
 
     <div class="ui-overlay">
         <div class="header">
-            <h1 class="title" id="mainTitle">Holiday Season with Caspar</h1>
+            <h1 class="title" id="mainTitle">40 Hours Caspar</h1>
         </div>
 
         <div class="center-info" id="centerInfo">
@@ -598,13 +553,13 @@
 
     <script>
         const events = [
-            { date: 'December 23', time: '19:00', endTime: '20:00', title: 'Luther & Wegner Dinner', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xFFD700 },
-            { date: 'December 23', time: '20:00', endTime: '22:00', title: 'Champagner BAR', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xF7E7CE },
-            { date: 'December 24', time: '18:00', endTime: '23:00', title: 'Weihnachten & Spiele', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xDC143C },
-            { date: 'December 24', time: '23:00', endTime: '02:00', title: 'Kupferkanne', location: 'Kupferkanne', address: 'Kurfürstendamm 216, 10719 Berlin', color: 0x228B22 },
-            { date: 'December 27', time: '12:00', endTime: '20:00', title: 'SPA', location: 'Location TBD', address: 'TBD', color: 0x666666 },
-            { date: 'December 31', time: '19:00', endTime: '23:00', title: 'Silvester: Buffet und Rituale', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xFFD700 },
-            { date: 'December 31', time: '23:00', endTime: '05:00', title: 'NYE Party', location: 'Studio 15. Stock', address: 'Lietzenburger Straße 86, 10719 Berlin', color: 0xFFD700 }
+            { date: 'November 12', time: '20:00', endTime: '22:00', title: 'Bowling', location: 'Berolina', address: 'Berolina, Kleiststraße 3-6, 10787 Berlin', color: 0x666666 },
+            { date: 'November 12', time: '22:30', endTime: '23:59', title: 'rein feiern', location: 'New Oldtimer', address: 'Lietzenburger Str. 12, 10789 Berlin', color: 0x666666 },
+            { date: 'November 13', time: '11:30', endTime: '14:00', title: 'Brunch', location: 'Cafe Einstein Mommseneck', address: 'Cafe Einstein Mommseneck, Mommsenstraße 45, 10629 Berlin', color: 0x666666 },
+            { date: 'November 13', time: '14:00', endTime: '18:00', title: 'Walk & Gemäldegalerie', location: 'Gemäldegalerie', address: 'Matthäikirchplatz, 10785 Berlin', color: 0x666666 },
+            { date: 'November 13', time: '19:00', endTime: '20:00', title: 'Workout', location: 'ride.bln Charlottenburg', address: 'ride.bln Charlottenburg, Lietzenburger Straße 86, Berlin', color: 0x666666 },
+            { date: 'November 13', time: '20:30', endTime: '22:30', title: 'Dinner', location: 'Ming Dynastie', address: 'Ming Dynastie Europa Center, Tauentzienstraße 9-12, 10789 Berlin', color: 0x666666 },
+            { date: 'November 13', time: '23:00', endTime: '01:00', title: 'Drinks', location: 'Victoria Bar', address: 'Victoria Bar, Potsdamer Straße 102, 10785 Berlin', color: 0x666666 }
         ];
 
         // Scene setup
@@ -669,14 +624,13 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Main ring - dark forest green for Christmas
+        // Main ring - smaller, fits screen
         const ringGeometry = new THREE.TorusGeometry(ringRadius, 0.04, 32, 100);
         const ringMaterial = new THREE.MeshStandardMaterial({
-            color: 0x0B4D0B,
-            metalness: 0.8,
+            color: 0x1a1a1a,
+            metalness: 0.7,
             roughness: 0.3,
-            emissive: 0x0B4D0B,
-            emissiveIntensity: 0.15
+            emissive: 0x0a0a0a
         });
         const ring = new THREE.Mesh(ringGeometry, ringMaterial);
         scene.add(ring);
@@ -694,13 +648,13 @@
                 ringRadius - 0.3, 0.12, 16, 32, segmentAngle
             );
             const segmentMaterial = new THREE.MeshStandardMaterial({
-                color: 0xC0C0C0,  // Silver metallic
-                emissive: 0xC0C0C0,
-                emissiveIntensity: 0.1,
+                color: 0x888888,
+                emissive: 0x888888,
+                emissiveIntensity: 0,
                 transparent: true,
                 opacity: 0.3,
-                metalness: 0.8,  // High metalness for metallic appearance
-                roughness: 0.3   // Low roughness for shiny appearance
+                metalness: 0.5,
+                roughness: 0.4
             });
 
             const segment = new THREE.Mesh(segmentGeometry, segmentMaterial);
@@ -717,19 +671,14 @@
             // Position events clockwise starting from top (12 o'clock position)
             const angle = Math.PI / 2 - (i / events.length) * Math.PI * 2;
 
-            // Visible sphere - realistic Christmas ornament
-            const markerGeometry = new THREE.SphereGeometry(0.12, 64, 64);
-            const beadColor = event.color;
-            const markerMaterial = new THREE.MeshPhysicalMaterial({
-                color: beadColor,
-                emissive: beadColor,
+            // Visible sphere
+            const markerGeometry = new THREE.SphereGeometry(0.12, 32, 32);
+            const markerMaterial = new THREE.MeshStandardMaterial({
+                color: 0x888888,
+                emissive: 0x666666,
                 emissiveIntensity: 0.2,
-                metalness: 1.0,
-                roughness: 0.05,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.1,
-                reflectivity: 1.0,
-                envMapIntensity: 2.0
+                metalness: 0.8,
+                roughness: 0.2
             });
 
             const marker = new THREE.Mesh(markerGeometry, markerMaterial);
@@ -762,19 +711,633 @@
         fillLight.position.set(-5, -5, 3);
         scene.add(fillLight);
 
-        // ========== CHRISTMAS EFFECTS SYSTEMS ==========
+        // ========== CINEMA 4D QUALITY FIRE SYSTEM ==========
 
-        // Event 0: Luther & Wegner - Dinner Plate with Santa Hat
-        const dinnerPlate = document.createElement('img');
-        dinnerPlate.src = '/dinner-santa-plate.png';
-        const isMobileForPlate = window.innerWidth < 768;
-        const plateSize = isMobileForPlate ? '90vw' : '80vw';
-        dinnerPlate.style.cssText = `
+        // Post-processing setup with bloom
+        let composer, bloomPass;
+
+        function setupPostProcessing() {
+            if (typeof THREE.EffectComposer === 'undefined') {
+                console.error('EffectComposer not loaded');
+                return false;
+            }
+
+            composer = new THREE.EffectComposer(renderer);
+
+            const renderPass = new THREE.RenderPass(scene, camera);
+            composer.addPass(renderPass);
+
+            bloomPass = new THREE.UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight),
+                2.5,    // strength - high for Cinema 4D glow
+                0.8,    // radius
+                0.2     // threshold - lower for more glow
+            );
+            composer.addPass(bloomPass);
+
+            console.log('✅ Post-processing setup complete');
+            return true;
+        }
+
+        // CINEMA 4D QUALITY FIRE SHADER
+        const fireShaderCode = {
+            vertexShader: `
+                varying vec3 vPosition;
+                varying vec3 vWorldPosition;
+                varying vec2 vUv;
+
+                void main() {
+                    vPosition = position;
+                    vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+
+            fragmentShader: `
+                uniform float time;
+                uniform float intensity;
+                varying vec3 vPosition;
+                varying vec3 vWorldPosition;
+                varying vec2 vUv;
+
+                // 3D Perlin noise (simplex)
+                vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+                vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+                float snoise(vec3 v) {
+                    const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+                    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+
+                    vec3 i  = floor(v + dot(v, C.yyy));
+                    vec3 x0 = v - i + dot(i, C.xxx);
+
+                    vec3 g = step(x0.yzx, x0.xyz);
+                    vec3 l = 1.0 - g;
+                    vec3 i1 = min(g.xyz, l.zxy);
+                    vec3 i2 = max(g.xyz, l.zxy);
+
+                    vec3 x1 = x0 - i1 + C.xxx;
+                    vec3 x2 = x0 - i2 + C.yyy;
+                    vec3 x3 = x0 - D.yyy;
+
+                    i = mod289(i);
+                    vec4 p = permute(permute(permute(
+                        i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                        + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                        + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+
+                    float n_ = 0.142857142857;
+                    vec3 ns = n_ * D.wyz - D.xzx;
+
+                    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+
+                    vec4 x_ = floor(j * ns.z);
+                    vec4 y_ = floor(j - 7.0 * x_);
+
+                    vec4 x = x_ *ns.x + ns.yyyy;
+                    vec4 y = y_ *ns.x + ns.yyyy;
+                    vec4 h = 1.0 - abs(x) - abs(y);
+
+                    vec4 b0 = vec4(x.xy, y.xy);
+                    vec4 b1 = vec4(x.zw, y.zw);
+
+                    vec4 s0 = floor(b0)*2.0 + 1.0;
+                    vec4 s1 = floor(b1)*2.0 + 1.0;
+                    vec4 sh = -step(h, vec4(0.0));
+
+                    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+                    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+
+                    vec3 p0 = vec3(a0.xy, h.x);
+                    vec3 p1 = vec3(a0.zw, h.y);
+                    vec3 p2 = vec3(a1.xy, h.z);
+                    vec3 p3 = vec3(a1.zw, h.w);
+
+                    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+                    p0 *= norm.x;
+                    p1 *= norm.y;
+                    p2 *= norm.z;
+                    p3 *= norm.w;
+
+                    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+                    m = m * m;
+                    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+                }
+
+                // Fractal Brownian Motion for sophisticated turbulence
+                float fbm(vec3 p, float t) {
+                    float value = 0.0;
+                    float amplitude = 0.5;
+                    float frequency = 1.0;
+
+                    for(int i = 0; i < 6; i++) {
+                        value += amplitude * snoise(p * frequency + vec3(0.0, t * 0.6, 0.0));
+                        amplitude *= 0.5;
+                        frequency *= 2.1;
+                    }
+                    return value;
+                }
+
+                // Curl noise for swirling motion
+                vec3 curlNoise(vec3 p, float t) {
+                    float e = 0.1;
+                    float n1 = snoise(p + vec3(0.0, e, 0.0) + vec3(0.0, t, 0.0));
+                    float n2 = snoise(p + vec3(0.0, -e, 0.0) + vec3(0.0, t, 0.0));
+                    float n3 = snoise(p + vec3(e, 0.0, 0.0) + vec3(0.0, t, 0.0));
+                    float n4 = snoise(p + vec3(-e, 0.0, 0.0) + vec3(0.0, t, 0.0));
+
+                    return vec3(
+                        (n1 - n2) / (2.0 * e),
+                        0.0,
+                        (n3 - n4) / (2.0 * e)
+                    );
+                }
+
+                // Volumetric fire with ray-marching (FIRST WORKING VERSION)
+                float volumetricFire(vec3 pos, float t) {
+                    // Multi-octave turbulence
+                    float noise = 0.0;
+                    float amplitude = 1.0;
+                    float frequency = 1.0;
+
+                    for (int i = 0; i < 4; i++) {
+                        noise += amplitude * snoise(pos * frequency + vec3(0.0, t * 0.5, 0.0));
+                        amplitude *= 0.5;
+                        frequency *= 2.0;
+                    }
+
+                    // Height-based density gradient (fire rises)
+                    float heightGradient = 1.0 - smoothstep(-0.3, 0.8, pos.y);
+
+                    // Combine noise and gradient
+                    float density = noise * heightGradient;
+
+                    // Add turbulence
+                    density += snoise(pos * 3.0 + vec3(t * 0.3, t * 0.8, 0.0)) * 0.3;
+
+                    return clamp(density, 0.0, 1.0);
+                }
+
+                // Cinema 4D color grading: black → dark red → orange → yellow → white
+                vec3 temperatureToColor(float temp) {
+                    vec3 color;
+                    if (temp < 0.2) {
+                        // Black to dark red
+                        color = mix(vec3(0.0), vec3(0.3, 0.0, 0.0), temp * 5.0);
+                    } else if (temp < 0.4) {
+                        // Dark red to red
+                        color = mix(vec3(0.3, 0.0, 0.0), vec3(0.9, 0.1, 0.0), (temp - 0.2) * 5.0);
+                    } else if (temp < 0.6) {
+                        // Red to orange
+                        color = mix(vec3(0.9, 0.1, 0.0), vec3(1.0, 0.5, 0.0), (temp - 0.4) * 5.0);
+                    } else if (temp < 0.8) {
+                        // Orange to yellow
+                        color = mix(vec3(1.0, 0.5, 0.0), vec3(1.0, 0.9, 0.3), (temp - 0.6) * 5.0);
+                    } else {
+                        // Yellow to white (hottest part)
+                        color = mix(vec3(1.0, 0.9, 0.3), vec3(1.0, 1.0, 1.0), (temp - 0.8) * 5.0);
+                    }
+
+                    return color;
+                }
+
+                void main() {
+                    vec3 pos = vPosition;
+                    float t = time * 0.8;
+
+                    // Calculate fire density
+                    float density = volumetricFire(pos, t);
+
+                    // Cinema 4D color grading
+                    vec3 color = temperatureToColor(density);
+
+                    // Apply intensity
+                    float alpha = density * intensity;
+
+                    gl_FragColor = vec4(color, alpha);
+                }
+            `
+        };
+
+        // Create fire geometry (torus covering both rings)
+        // Outer ring at ringRadius, inner segments at ringRadius - 0.3
+        // Position fire at midpoint to cover both
+        const fireGeometry = new THREE.TorusGeometry(
+            ringRadius - 0.15,  // Midpoint between outer and inner rings
+            0.35,               // Large enough tube to cover both rings (0.3 gap + ring thickness)
+            32,                 // Radial segments
+            100                 // Tubular segments
+        );
+
+        const fireMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0.0 },
+                intensity: { value: 0.0 }  // Start invisible
+            },
+            vertexShader: fireShaderCode.vertexShader,
+            fragmentShader: fireShaderCode.fragmentShader,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            side: THREE.DoubleSide
+        });
+
+        const fireMesh = new THREE.Mesh(fireGeometry, fireMaterial);
+        scene.add(fireMesh);
+
+        // Fire activation state
+        let fireActive = false;
+        let fireIntensityTarget = 0.0;
+
+        function activateFire() {
+            fireActive = true;
+            fireIntensityTarget = 1.0;
+            console.log('🔥 Fire activated');
+        }
+
+        function deactivateFire() {
+            fireActive = false;
+            fireIntensityTarget = 0.0;
+            console.log('💨 Fire deactivated');
+        }
+
+        // Update fire in animation loop
+        function updateFire(deltaTime) {
+            // Smooth intensity transition
+            const currentIntensity = fireMaterial.uniforms.intensity.value;
+            fireMaterial.uniforms.intensity.value += (fireIntensityTarget - currentIntensity) * 0.05;
+
+            // Update time for shader animation
+            fireMaterial.uniforms.time.value += deltaTime * 0.001;
+        }
+
+        // Initialize post-processing after page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (setupPostProcessing()) {
+                    console.log('🎬 Cinema 4D quality fire system ready');
+                }
+            }, 500);
+        });
+
+        // ========== END FIRE SYSTEM ==========
+
+        // ========== WORKOUT SMOKE & STROBE SYSTEM ==========
+
+        // Create smoke group
+        const smokeGroup = new THREE.Group();
+        smokeGroup.position.set(0, 0, 0);
+        scene.add(smokeGroup);
+
+        // Smoke tube geometry - same as ring
+        const smokeGeometry = new THREE.TorusGeometry(
+            ringRadius - 0.15,
+            0.35,
+            32,
+            100
+        );
+
+        // White smoke shader with strobe effect
+        const smokeShaderCode = {
+            vertexShader: `
+                varying vec2 vUv;
+                varying vec3 vPosition;
+
+                void main() {
+                    vUv = uv;
+                    vPosition = position;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+
+            fragmentShader: `
+                uniform float time;
+                uniform float intensity;
+                uniform float strobeIntensity;
+                varying vec2 vUv;
+                varying vec3 vPosition;
+
+                // Simple noise function
+                float noise(vec2 st) {
+                    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+                }
+
+                void main() {
+                    // Smoke movement
+                    vec2 smokeCoord = vUv * 3.0 + time * 0.3;
+                    float smokePattern = noise(smokeCoord);
+                    smokePattern += noise(smokeCoord * 2.0) * 0.5;
+                    smokePattern += noise(smokeCoord * 4.0) * 0.25;
+                    smokePattern /= 1.75;
+
+                    // Vertical gradient
+                    float vertical = smoothstep(0.0, 0.5, vUv.y) * smoothstep(1.0, 0.5, vUv.y);
+
+                    // White smoke color
+                    vec3 smokeColor = vec3(0.9, 0.9, 0.95);
+
+                    // Apply strobe flash
+                    smokeColor *= strobeIntensity;
+
+                    // Final alpha
+                    float alpha = smokePattern * vertical * intensity * 0.7;
+
+                    gl_FragColor = vec4(smokeColor, alpha);
+                }
+            `
+        };
+
+        const smokeMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0 },
+                intensity: { value: 0.0 },
+                strobeIntensity: { value: 1.0 }
+            },
+            vertexShader: smokeShaderCode.vertexShader,
+            fragmentShader: smokeShaderCode.fragmentShader,
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+
+        const smokeMesh = new THREE.Mesh(smokeGeometry, smokeMaterial);
+        smokeGroup.add(smokeMesh);
+
+        // Smoke state
+        let smokeActive = false;
+        let smokeIntensityTarget = 0.0;
+        let strobeTime = 0;
+
+        function activateSmoke() {
+            smokeActive = true;
+            smokeIntensityTarget = 1.0;
+            console.log('💨 Workout smoke activated');
+        }
+
+        function deactivateSmoke() {
+            smokeActive = false;
+            smokeIntensityTarget = 0.0;
+            console.log('💨 Workout smoke deactivated');
+        }
+
+        // Update smoke in animation loop
+        function updateSmoke(deltaTime) {
+            // Smooth intensity transition
+            const currentIntensity = smokeMaterial.uniforms.intensity.value;
+            smokeMaterial.uniforms.intensity.value += (smokeIntensityTarget - currentIntensity) * 0.05;
+
+            if (smokeActive || currentIntensity > 0.01) {
+                // Update time for smoke animation
+                smokeMaterial.uniforms.time.value += deltaTime * 0.0005;
+
+                // Strobe effect - random flashes
+                strobeTime += deltaTime * 0.002;
+
+                // Fast strobe pattern (workout intensity!)
+                const strobePattern = Math.sin(strobeTime * 30.0) > 0.7 ? 2.0 : 0.3;
+                smokeMaterial.uniforms.strobeIntensity.value = strobePattern;
+
+                // Rotate smoke slightly
+                smokeGroup.rotation.z += deltaTime * 0.0003;
+            }
+        }
+
+        // ========== END WORKOUT SMOKE & STROBE SYSTEM ==========
+
+        // ========== CHINESE EMOJI SYSTEM (Ming Dynasty) ==========
+
+        let chineseEmojiInterval = null;
+        let chineseEmojiActive = false;
+        const chineseEmojis = [
+            '🐉', '🐉', '🐉', '🐉',  // Dragons (most frequent)
+            '🐲', '🐲', '🐲',        // More dragons
+            '🥢', '🥢',              // Chopsticks
+            '🏮'                     // Lantern
+        ];
+
+        function createChineseEmoji() {
+            const emoji = document.createElement('div');
+            emoji.className = 'chinese-emoji';
+            emoji.textContent = chineseEmojis[Math.floor(Math.random() * chineseEmojis.length)];
+
+            // Random starting position on screen
+            const startX = Math.random() * window.innerWidth;
+            const startY = Math.random() * window.innerHeight;
+            emoji.style.left = startX + 'px';
+            emoji.style.top = startY + 'px';
+
+            // Random movement direction
+            const tx = (Math.random() - 0.5) * 400; // -200 to 200px
+            const ty = (Math.random() - 0.5) * 400;
+            const rotate = (Math.random() - 0.5) * 720; // -360 to 360deg
+
+            emoji.style.setProperty('--tx', tx + 'px');
+            emoji.style.setProperty('--ty', ty + 'px');
+            emoji.style.setProperty('--rotate', rotate + 'deg');
+
+            document.body.appendChild(emoji);
+
+            // Remove after animation completes
+            setTimeout(() => {
+                emoji.remove();
+            }, 3000);
+        }
+
+        function activateYellowWater() {
+            if (chineseEmojiActive) return;
+            chineseEmojiActive = true;
+
+            // Create initial burst of emojis
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => createChineseEmoji(), i * 100);
+            }
+
+            // Continue creating emojis while active
+            chineseEmojiInterval = setInterval(() => {
+                createChineseEmoji();
+            }, 400);
+
+            console.log('🐉 Chinese emojis activated');
+        }
+
+        function deactivateYellowWater() {
+            if (!chineseEmojiActive) return;
+            chineseEmojiActive = false;
+
+            if (chineseEmojiInterval) {
+                clearInterval(chineseEmojiInterval);
+                chineseEmojiInterval = null;
+            }
+
+            // Remove all existing emojis
+            document.querySelectorAll('.chinese-emoji').forEach(emoji => {
+                emoji.remove();
+            });
+
+            console.log('🐉 Chinese emojis deactivated');
+        }
+
+        function updateYellowWater(deltaTime) {
+            // CSS animations handle movement, no manual updates needed
+        }
+
+        // ========== END CHINESE EMOJI SYSTEM ==========
+
+        // ========== VIDEO BOWLING BALL SYSTEM ==========
+
+        // Create bowling ball group
+        const bowlingBallGroup = new THREE.Group();
+        bowlingBallGroup.position.set(0, 0, 0);
+        scene.add(bowlingBallGroup);
+
+        const ballRadius = ringRadius * 0.6;
+
+        // Create video element
+        const video = document.createElement('video');
+        video.src = '/bowling-ball.mp4';
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.crossOrigin = 'anonymous';
+
+        // Create video texture
+        const videoTexture = new THREE.VideoTexture(video);
+        videoTexture.minFilter = THREE.LinearFilter;
+        videoTexture.magFilter = THREE.LinearFilter;
+
+        // Create bowling ball geometry and material
+        const ballGeometry = new THREE.SphereGeometry(ballRadius, 128, 128);
+        const ballMaterial = new THREE.MeshBasicMaterial({
+            map: videoTexture,
+            transparent: true,
+            opacity: 0.0
+        });
+        const ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
+        bowlingBallGroup.add(ballMesh);
+
+        // Bowling ball state
+        let bowlingBallActive = false;
+        let bowlingBallOpacityTarget = 0.0;
+
+        function activateBowlingBall() {
+            bowlingBallActive = true;
+            bowlingBallOpacityTarget = 1.0;
+            video.play().catch(e => console.log('Video play failed:', e));
+            console.log('🎳 Bowling ball activated');
+        }
+
+        function deactivateBowlingBall() {
+            bowlingBallActive = false;
+            bowlingBallOpacityTarget = 0.0;
+            video.pause();
+            console.log('🎳 Bowling ball deactivated');
+        }
+
+        // Update bowling ball in animation loop
+        function updateBowlingBall(deltaTime) {
+            // Smooth opacity transition
+            const currentOpacity = ballMaterial.opacity;
+            ballMaterial.opacity += (bowlingBallOpacityTarget - currentOpacity) * 0.05;
+
+            // Slower, elegant bowling ball spin
+            if (bowlingBallActive || currentOpacity > 0.01) {
+                bowlingBallGroup.rotation.y += deltaTime * 0.0009;  // Main spin
+                bowlingBallGroup.rotation.x += deltaTime * 0.0002; // Slight wobble
+                bowlingBallGroup.rotation.z += deltaTime * 0.00015; // Extra realism
+            }
+        }
+
+        // ========== END BOWLING BALL SYSTEM ==========
+
+        // ========== KISS EMOJI SYSTEM (New Oldtimer) ==========
+
+        let kissEmojiInterval = null;
+        let kissEmojiActive = false;
+        const kissEmojis = ['💋', '😘', '💕', '💖', '😍', '🥰'];
+
+        function createKissEmoji() {
+            const emoji = document.createElement('div');
+            emoji.className = 'kiss-emoji';
+            emoji.textContent = kissEmojis[Math.floor(Math.random() * kissEmojis.length)];
+
+            // Random starting position on screen
+            const startX = Math.random() * window.innerWidth;
+            const startY = Math.random() * window.innerHeight;
+            emoji.style.left = startX + 'px';
+            emoji.style.top = startY + 'px';
+
+            // Random movement direction
+            const tx = (Math.random() - 0.5) * 400; // -200 to 200px
+            const ty = (Math.random() - 0.5) * 400;
+            const rotate = (Math.random() - 0.5) * 720; // -360 to 360deg
+
+            emoji.style.setProperty('--tx', tx + 'px');
+            emoji.style.setProperty('--ty', ty + 'px');
+            emoji.style.setProperty('--rotate', rotate + 'deg');
+
+            document.body.appendChild(emoji);
+
+            // Remove after animation completes
+            setTimeout(() => {
+                emoji.remove();
+            }, 3000);
+        }
+
+        function activateKissEmojis() {
+            if (kissEmojiActive) return;
+            kissEmojiActive = true;
+
+            // Create initial burst of emojis
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => createKissEmoji(), i * 100);
+            }
+
+            // Continue creating emojis while active
+            kissEmojiInterval = setInterval(() => {
+                createKissEmoji();
+            }, 400);
+
+            console.log('💋 Kiss emojis activated');
+        }
+
+        function deactivateKissEmojis() {
+            if (!kissEmojiActive) return;
+            kissEmojiActive = false;
+
+            if (kissEmojiInterval) {
+                clearInterval(kissEmojiInterval);
+                kissEmojiInterval = null;
+            }
+
+            // Remove all existing emojis
+            document.querySelectorAll('.kiss-emoji').forEach(emoji => {
+                emoji.remove();
+            });
+
+            console.log('💋 Kiss emojis deactivated');
+        }
+
+        // ========== END KISS EMOJI SYSTEM ==========
+
+        // ========== BRUNCH PLATE SYSTEM (HTML overlay) ==========
+
+        // Create brunch plate element
+        const brunchPattern = document.createElement('img');
+        brunchPattern.src = '/brunch-plate.png';
+
+        // Size to be as large as possible without fork/spoon leaving frame - centered behind ring
+        const isMobile = window.innerWidth < 768;
+        const patternSize = isMobile ? '90vw' : '80vw'; // Much larger, full width basically
+
+        brunchPattern.style.cssText = `
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: ${plateSize};
+            width: ${patternSize};
             max-width: 1200px;
             height: auto;
             object-fit: contain;
@@ -783,221 +1346,46 @@
             z-index: 0;
             transition: opacity 0.5s ease;
         `;
-        document.body.appendChild(dinnerPlate);
 
-        let dinnerPlateActive = false;
+        document.body.appendChild(brunchPattern);
 
-        function activateDinnerPlate() {
-            dinnerPlateActive = true;
-            dinnerPlate.style.opacity = '1';
-            document.querySelector('.ring-overlay').classList.add('dinner-plate-active');
-            console.log('🍴 Dinner plate activated');
+        // Brunch state
+        let brunchActive = false;
+
+        function activateBrunchPlate() {
+            brunchActive = true;
+            brunchPattern.style.opacity = '1';
+            document.querySelector('.ring-overlay').classList.add('brunch-active');
+            console.log('☕ Brunch pattern activated');
         }
 
-        function deactivateDinnerPlate() {
-            dinnerPlateActive = false;
-            dinnerPlate.style.opacity = '0';
-            document.querySelector('.ring-overlay').classList.remove('dinner-plate-active');
-            console.log('🍴 Dinner plate deactivated');
+        function deactivateBrunchPlate() {
+            brunchActive = false;
+            brunchPattern.style.opacity = '0';
+            document.querySelector('.ring-overlay').classList.remove('brunch-active');
+            console.log('☕ Brunch pattern deactivated');
         }
 
-        // Event 1: Champagner BAR - YouTube Video
-        const champagneVideo = document.createElement('iframe');
-        champagneVideo.src = 'https://www.youtube.com/embed/STH3VwMJP7Q?autoplay=1&mute=1&loop=1&playlist=STH3VwMJP7Q&controls=0&showinfo=0&rel=0&modestbranding=1';
-        champagneVideo.allow = 'autoplay; encrypted-media';
-        champagneVideo.className = 'youtube-video-bg';
-        champagneVideo.style.width = '177.77vh';
-        champagneVideo.style.height = '100vw';
-        champagneVideo.setAttribute('frameborder', '0');
-        document.body.appendChild(champagneVideo);
-
-        let champagneVideoActive = false;
-
-        function activateChampagneVideo() {
-            champagneVideoActive = true;
-            champagneVideo.classList.add('active');
-            console.log('🍾 Champagne video activated');
+        // Update brunch animation (static image)
+        function updateBrunchPlate(deltaTime) {
+            // Static image - no animation needed
         }
 
-        function deactivateChampagneVideo() {
-            champagneVideoActive = false;
-            champagneVideo.classList.remove('active');
-            console.log('🍾 Champagne video deactivated');
+        // ========== END BRUNCH PLATE SYSTEM ==========
+
+        // ========== SCULPTURE BACKGROUND (Gemäldegalerie) ==========
+
+        function activateSculpture() {
+            document.body.classList.add('sculpture-active');
+            console.log('🗿 Classical sculpture background activated');
         }
 
-        // Event 2: Weihnachten - Christmas Emoji Particles
-        let christmasEmojiInterval = null;
-        let christmasEmojiActive = false;
-        const christmasEmojis = ['🎄', '🎅', '🤶', '🎁', '⛄', '❄️', '🌟'];
-
-        function createChristmasEmoji() {
-            const emoji = document.createElement('div');
-            emoji.className = 'christmas-emoji';
-            emoji.textContent = christmasEmojis[Math.floor(Math.random() * christmasEmojis.length)];
-
-            const startX = Math.random() * window.innerWidth;
-            const startY = Math.random() * window.innerHeight;
-            emoji.style.left = startX + 'px';
-            emoji.style.top = startY + 'px';
-
-            const tx = (Math.random() - 0.5) * 400;
-            const ty = (Math.random() - 0.5) * 400;
-            const rotate = (Math.random() - 0.5) * 720;
-
-            emoji.style.setProperty('--tx', tx + 'px');
-            emoji.style.setProperty('--ty', ty + 'px');
-            emoji.style.setProperty('--rotate', rotate + 'deg');
-
-            document.body.appendChild(emoji);
-
-            setTimeout(() => {
-                emoji.remove();
-            }, 3000);
+        function deactivateSculpture() {
+            document.body.classList.remove('sculpture-active');
+            console.log('🗿 Classical sculpture background deactivated');
         }
 
-        function activateChristmasEmojis() {
-            if (christmasEmojiActive) return;
-            christmasEmojiActive = true;
-
-            for (let i = 0; i < 8; i++) {
-                setTimeout(() => createChristmasEmoji(), i * 100);
-            }
-
-            christmasEmojiInterval = setInterval(() => {
-                createChristmasEmoji();
-            }, 400);
-
-            console.log('🎄 Christmas emojis activated');
-        }
-
-        function deactivateChristmasEmojis() {
-            if (!christmasEmojiActive) return;
-            christmasEmojiActive = false;
-
-            if (christmasEmojiInterval) {
-                clearInterval(christmasEmojiInterval);
-                christmasEmojiInterval = null;
-            }
-
-            document.querySelectorAll('.christmas-emoji').forEach(emoji => {
-                emoji.remove();
-            });
-
-            console.log('🎄 Christmas emojis deactivated');
-        }
-
-        // Event 3: Kupferkanne - Beer Emojis + Background
-        let beerEmojiInterval = null;
-        let beerEmojiActive = false;
-        const beerEmojis = ['🍺', '🍻'];
-
-        function createBeerEmoji() {
-            const emoji = document.createElement('div');
-            emoji.className = 'beer-emoji';
-            emoji.textContent = beerEmojis[Math.floor(Math.random() * beerEmojis.length)];
-
-            const startX = Math.random() * window.innerWidth;
-            const startY = Math.random() * window.innerHeight;
-            emoji.style.left = startX + 'px';
-            emoji.style.top = startY + 'px';
-
-            const tx = (Math.random() - 0.5) * 400;
-            const ty = (Math.random() - 0.5) * 400;
-            const rotate = (Math.random() - 0.5) * 720;
-
-            emoji.style.setProperty('--tx', tx + 'px');
-            emoji.style.setProperty('--ty', ty + 'px');
-            emoji.style.setProperty('--rotate', rotate + 'deg');
-
-            document.body.appendChild(emoji);
-
-            setTimeout(() => {
-                emoji.remove();
-            }, 3000);
-        }
-
-        function activateKupferkanne() {
-            if (beerEmojiActive) return;
-            beerEmojiActive = true;
-
-            document.body.classList.add('kupferkanne-active');
-
-            for (let i = 0; i < 8; i++) {
-                setTimeout(() => createBeerEmoji(), i * 100);
-            }
-
-            beerEmojiInterval = setInterval(() => {
-                createBeerEmoji();
-            }, 400);
-
-            console.log('🍺 Kupferkanne (beer + background) activated');
-        }
-
-        function deactivateKupferkanne() {
-            if (!beerEmojiActive) return;
-            beerEmojiActive = false;
-
-            document.body.classList.remove('kupferkanne-active');
-
-            if (beerEmojiInterval) {
-                clearInterval(beerEmojiInterval);
-                beerEmojiInterval = null;
-            }
-
-            document.querySelectorAll('.beer-emoji').forEach(emoji => {
-                emoji.remove();
-            });
-
-            console.log('🍺 Kupferkanne deactivated');
-        }
-
-        // Event 4: SPA - Sauna Background
-        function activateSauna() {
-            document.body.classList.add('sauna-active');
-            console.log('🧖 Sauna background activated');
-        }
-
-        function deactivateSauna() {
-            document.body.classList.remove('sauna-active');
-            console.log('🧖 Sauna background deactivated');
-        }
-
-        // Event 5: Silvester Buffet - Dinner for One Background
-        function activateDinnerForOne() {
-            document.body.classList.add('dinner-for-one-active');
-            console.log('🍽️ Dinner for One background activated');
-        }
-
-        function deactivateDinnerForOne() {
-            document.body.classList.remove('dinner-for-one-active');
-            console.log('🍽️ Dinner for One background deactivated');
-        }
-
-        // Event 6: NYE Party - Fireworks YouTube Video
-        const fireworksVideo = document.createElement('iframe');
-        fireworksVideo.src = 'https://www.youtube.com/embed/RfGu1THRr3U?autoplay=1&mute=1&loop=1&playlist=RfGu1THRr3U&controls=0&showinfo=0&rel=0&modestbranding=1';
-        fireworksVideo.allow = 'autoplay; encrypted-media';
-        fireworksVideo.className = 'youtube-video-bg';
-        fireworksVideo.style.width = '177.77vh';
-        fireworksVideo.style.height = '100vw';
-        fireworksVideo.setAttribute('frameborder', '0');
-        document.body.appendChild(fireworksVideo);
-
-        let fireworksVideoActive = false;
-
-        function activateFireworksVideo() {
-            fireworksVideoActive = true;
-            fireworksVideo.classList.add('active');
-            console.log('🎆 Fireworks video activated');
-        }
-
-        function deactivateFireworksVideo() {
-            fireworksVideoActive = false;
-            fireworksVideo.classList.remove('active');
-            console.log('🎆 Fireworks video deactivated');
-        }
-
-        // ========== END CHRISTMAS EFFECTS SYSTEMS ==========
+        // ========== END SCULPTURE BACKGROUND ==========
 
         // Interaction
         let isDragging = false;
@@ -1082,33 +1470,39 @@
                     duration: 0.4
                 });
 
-                // Deactivate Christmas effects when switching events
+                // Deactivate bowling ball when switching away from Bowling
                 if (currentActive === 0) {
-                    deactivateDinnerPlate();
+                    deactivateBowlingBall();
                 }
 
+                // Deactivate kiss emojis when switching away from New Oldtimer
                 if (currentActive === 1) {
-                    deactivateChampagneVideo();
+                    deactivateKissEmojis();
                 }
 
+                // Deactivate brunch plate when switching away from Brunch
                 if (currentActive === 2) {
-                    deactivateChristmasEmojis();
+                    deactivateBrunchPlate();
                 }
 
+                // Deactivate sculpture when switching away from Gemäldegalerie
                 if (currentActive === 3) {
-                    deactivateKupferkanne();
+                    deactivateSculpture();
                 }
 
+                // Deactivate smoke when switching away from Workout
                 if (currentActive === 4) {
-                    deactivateSauna();
+                    deactivateSmoke();
                 }
 
+                // Deactivate yellow water when switching away from Dinner
                 if (currentActive === 5) {
-                    deactivateDinnerForOne();
+                    deactivateYellowWater();
                 }
 
+                // Deactivate fire when switching away from Victoria Bar
                 if (currentActive === 6) {
-                    deactivateFireworksVideo();
+                    deactivateFire();
                 }
             }
 
@@ -1173,33 +1567,39 @@
                 openRSVPModal(event);
             };
 
-            // Activate Christmas effects
+            // Activate bowling ball ONLY for Bowling event (index 0)
             if (index === 0) {
-                activateDinnerPlate();
+                activateBowlingBall();
             }
 
+            // Activate kiss emojis for New Oldtimer event (index 1)
             if (index === 1) {
-                activateChampagneVideo();
+                activateKissEmojis();
             }
 
+            // Activate brunch plate for Brunch event (index 2)
             if (index === 2) {
-                activateChristmasEmojis();
+                activateBrunchPlate();
             }
 
+            // Activate sculpture for Gemäldegalerie event (index 3)
             if (index === 3) {
-                activateKupferkanne();
+                activateSculpture();
             }
 
+            // Activate smoke and strobe for Workout event (index 4)
             if (index === 4) {
-                activateSauna();
+                activateSmoke();
             }
 
+            // Activate yellow water flow for Dinner event (index 5)
             if (index === 5) {
-                activateDinnerForOne();
+                activateYellowWater();
             }
 
+            // Activate fire for Drinks event (index 6)
             if (index === 6) {
-                activateFireworksVideo();
+                activateFire();
             }
 
             // Haptic
@@ -1233,33 +1633,39 @@
                 }
             });
 
-            // Deactivate Christmas effects
+            // Deactivate bowling ball if it was Bowling
             if (currentActive === 0) {
-                deactivateDinnerPlate();
+                deactivateBowlingBall();
             }
 
+            // Deactivate kiss emojis if it was New Oldtimer
             if (currentActive === 1) {
-                deactivateChampagneVideo();
+                deactivateKissEmojis();
             }
 
+            // Deactivate brunch plate if it was Brunch
             if (currentActive === 2) {
-                deactivateChristmasEmojis();
+                deactivateBrunchPlate();
             }
 
+            // Deactivate sculpture if it was Gemäldegalerie
             if (currentActive === 3) {
-                deactivateKupferkanne();
+                deactivateSculpture();
             }
 
+            // Deactivate smoke if it was Workout
             if (currentActive === 4) {
-                deactivateSauna();
+                deactivateSmoke();
             }
 
+            // Deactivate yellow water if it was Dinner
             if (currentActive === 5) {
-                deactivateDinnerForOne();
+                deactivateYellowWater();
             }
 
+            // Deactivate fire if it was Victoria Bar
             if (currentActive === 6) {
-                deactivateFireworksVideo();
+                deactivateFire();
             }
 
             currentActive = null;
@@ -1307,8 +1713,27 @@
             // Subtle pulse
             ring.scale.setScalar(1 + Math.sin(Date.now() * 0.0008) * 0.008);
 
-            // Render scene
-            renderer.render(scene, camera);
+            // Update fire
+            updateFire(deltaTime);
+
+            // Update smoke
+            updateSmoke(deltaTime);
+
+            // Update yellow water
+            updateYellowWater(deltaTime);
+
+            // Update brunch plate
+            updateBrunchPlate(deltaTime);
+
+            // Update bowling ball
+            updateBowlingBall(deltaTime);
+
+            // Render with bloom if available, otherwise use standard renderer
+            if (composer) {
+                composer.render();
+            } else {
+                renderer.render(scene, camera);
+            }
         }
 
         // RSVP Modal functions
