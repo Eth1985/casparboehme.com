@@ -681,6 +681,39 @@
         const ring = new THREE.Mesh(ringGeometry, ringMaterial);
         scene.add(ring);
 
+        // Christmas chain lights on the ring
+        const numLights = 40;
+        const chainLights = [];
+        for (let i = 0; i < numLights; i++) {
+            const angle = (i / numLights) * Math.PI * 2;
+            const lightGeometry = new THREE.SphereGeometry(0.02, 16, 16);
+            const lightMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0xfff4d9,
+                emissive: 0xfff4d9,
+                emissiveIntensity: 0.8,
+                metalness: 0.3,
+                roughness: 0.2
+            });
+            const light = new THREE.Mesh(lightGeometry, lightMaterial);
+            light.position.x = Math.cos(angle) * ringRadius;
+            light.position.y = Math.sin(angle) * ringRadius;
+            light.position.z = 0;
+            scene.add(light);
+            chainLights.push(light);
+
+            // Random blinking for each light
+            const delay = Math.random() * 2;
+            const duration = 0.3 + Math.random() * 0.4;
+            gsap.to(light.material, {
+                emissiveIntensity: 0.1,
+                duration: duration,
+                delay: delay,
+                repeat: -1,
+                yoyo: true,
+                ease: 'power1.inOut'
+            });
+        }
+
         // Time segments - touchable slices
         const segments = [];
         const segmentAngle = (Math.PI * 2) / events.length;
@@ -1142,9 +1175,9 @@
                 ease: 'elastic.out(1, 0.5)'
             });
 
-            // Christmas light blinking effect (darker)
-            gsap.to(markers[index].material, {
-                emissiveIntensity: 0.02,
+            // Christmas light blinking effect (brighter)
+            blinkAnimation = gsap.to(markers[index].material, {
+                emissiveIntensity: 0.4,
                 duration: 0.5,
                 repeat: -1,
                 yoyo: true,
