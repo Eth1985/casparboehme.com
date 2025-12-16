@@ -681,41 +681,6 @@
         const ring = new THREE.Mesh(ringGeometry, ringMaterial);
         scene.add(ring);
 
-        // Christmas chain lights on the ring
-        const numLights = 30;
-        const chainLights = [];
-        const lightColors = [0xffd700, 0xff0000, 0x00ff00, 0x0000ff, 0xffffff]; // Gold, red, green, blue, white
-        for (let i = 0; i < numLights; i++) {
-            const angle = (i / numLights) * Math.PI * 2;
-            const lightGeometry = new THREE.SphereGeometry(0.06, 16, 16); // Bigger!
-            const lightColor = lightColors[i % lightColors.length];
-            const lightMaterial = new THREE.MeshStandardMaterial({
-                color: lightColor,
-                emissive: lightColor,
-                emissiveIntensity: 1.2,
-                metalness: 0.8,
-                roughness: 0.2
-            });
-            const light = new THREE.Mesh(lightGeometry, lightMaterial);
-            light.position.x = Math.cos(angle) * ringRadius;
-            light.position.y = Math.sin(angle) * ringRadius;
-            light.position.z = 0.05; // Slightly forward
-            scene.add(light);
-            chainLights.push(light);
-
-            // Random blinking for each light
-            const delay = Math.random() * 2;
-            const duration = 0.3 + Math.random() * 0.5;
-            gsap.to(light.material, {
-                emissiveIntensity: 0.2,
-                duration: duration,
-                delay: delay,
-                repeat: -1,
-                yoyo: true,
-                ease: 'power1.inOut'
-            });
-        }
-
         // Time segments - touchable slices
         const segments = [];
         const segmentAngle = (Math.PI * 2) / events.length;
