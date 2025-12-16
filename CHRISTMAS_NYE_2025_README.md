@@ -524,6 +524,202 @@ curl localhost:3000/health   # Check server status
 
 ---
 
-**Last Updated**: December 16, 2025 (late afternoon)
-**Version**: 2.3 (Black Screen Recovery & Ring Color Fix)
+## 📚 Content Integration Best Practices
+
+### Learnings from Adding Videos, Images & Media
+
+**CRITICAL RULE**: Always follow existing patterns in the codebase. Don't invent new approaches.
+
+#### ✅ How to Add a YouTube Background Video (CORRECT WAY)
+
+Based on successful implementation of Weihnachten video (Dec 16, 2025):
+
+**1. Create the iframe element** (around line 829 in index.html):
+```javascript
+// Event X: [Event Name] - YouTube Video Background
+const eventVideo = document.createElement('iframe');
+eventVideo.src = 'https://www.youtube.com/embed/VIDEO_ID?start=SECONDS&autoplay=1&mute=1&loop=1&playlist=VIDEO_ID&controls=0&showinfo=0&rel=0&modestbranding=1';
+eventVideo.allow = 'autoplay; encrypted-media';
+eventVideo.className = 'youtube-video-bg';
+eventVideo.style.width = '177.77vh';
+eventVideo.style.height = '100vw';
+eventVideo.setAttribute('frameborder', '0');
+document.body.appendChild(eventVideo);
+```
+
+**Key parameters explained**:
+- `start=76` - Start at 76 seconds (1:16)
+- `autoplay=1` - Auto-play when activated
+- **`mute=1`** - **REQUIRED** for autoplay to work (browsers block unmuted autoplay)
+- `loop=1` - Loop the video
+- `playlist=VIDEO_ID` - Required for looping to work
+- `controls=0` - Hide YouTube controls
+- `showinfo=0` - Hide video title
+- `rel=0` - Don't show related videos
+- `modestbranding=1` - Minimal YouTube branding
+
+**2. Add activate/deactivate functions** (right after the iframe creation):
+```javascript
+let eventVideoActive = false;
+
+function activateEventVideo() {
+    eventVideoActive = true;
+    eventVideo.classList.add('active');
+    console.log('🎬 Event video activated');
+}
+
+function deactivateEventVideo() {
+    eventVideoActive = false;
+    eventVideo.classList.remove('active');
+    console.log('🎬 Event video deactivated');
+}
+```
+
+**3. Hook into event click handler** (around line 1221):
+```javascript
+if (index === 2) {  // Event index (0-based)
+    activateEventVideo();
+}
+```
+
+**4. Hook into event deactivation** (two places around lines 1127 and 1282):
+```javascript
+if (currentActive === 2) {
+    deactivateEventVideo();
+}
+```
+
+#### ❌ WRONG APPROACHES (Don't Do This)
+
+**DON'T** try to add videos via event properties:
+```javascript
+// ❌ WRONG - This doesn't follow the existing pattern
+{
+  date: 'December 24',
+  title: 'Event',
+  youtubeUrl: 'https://youtube.com/...'  // Don't add custom properties
+}
+```
+
+**DON'T** try to embed videos in the RSVP modal:
+```javascript
+// ❌ WRONG - Videos should be full-screen backgrounds, not modal embeds
+if (event.youtubeUrl) {
+    timeHTML += `<iframe...>`;  // This breaks the design pattern
+}
+```
+
+**WHY**: The site follows a consistent pattern where all media (videos, images, emojis) are **full-screen background effects** activated by clicking an event bead, not embedded content in the modal.
+
+#### Adding Static Images as Backgrounds
+
+**Pattern**: Follow the Kupferkanne photo example (around line 916):
+
+```javascript
+// 1. Add CSS class for the background
+.kupferkanne-photo-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('kupferkanne.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 0.8s ease;
+}
+
+.kupferkanne-photo-bg.active {
+    opacity: 0.4;  // Subtle background opacity
+}
+
+// 2. Create the element in JavaScript
+const kupferkannePhoto = document.createElement('div');
+kupferkannePhoto.className = 'kupferkanne-photo-bg';
+document.body.appendChild(kupferkannePhoto);
+
+// 3. Add activate/deactivate functions
+function activateKupferkanne() {
+    kupferkannePhoto.classList.add('active');
+}
+
+function deactivateKupferkanne() {
+    kupferkannePhoto.classList.remove('active');
+}
+```
+
+#### Adding Emoji/Particle Effects
+
+**Pattern**: Follow the Christmas emoji example (around line 859):
+
+```javascript
+// 1. Define emoji array
+const eventEmojis = ['🎄', '🎅', '🤶', '🎁'];
+
+// 2. Create emoji creation function
+function createEventEmoji() {
+    const emoji = document.createElement('div');
+    emoji.className = 'floating-emoji';
+    emoji.textContent = eventEmojis[Math.floor(Math.random() * eventEmojis.length)];
+    emoji.style.left = Math.random() * 100 + 'vw';
+    emoji.style.animationDuration = (Math.random() * 3 + 4) + 's';
+    emoji.style.fontSize = (Math.random() * 30 + 40) + 'px';
+    document.body.appendChild(emoji);
+
+    setTimeout(() => emoji.remove(), 8000);
+}
+
+// 3. Create activate/deactivate functions
+let emojiInterval = null;
+
+function activateEventEmojis() {
+    if (emojiInterval) return;
+    emojiInterval = setInterval(() => {
+        createEventEmoji();
+        createEventEmoji();
+    }, 500);
+}
+
+function deactivateEventEmojis() {
+    if (emojiInterval) {
+        clearInterval(emojiInterval);
+        emojiInterval = null;
+    }
+}
+```
+
+### General Content Integration Principles
+
+1. **Always inspect the codebase first** - Look for similar content (videos, images) already implemented
+2. **Follow the established pattern exactly** - Don't try to "improve" or "simplify" the pattern
+3. **Test locally before deploying** - YouTube videos especially need testing (autoplay, mute, etc.)
+4. **Full-screen backgrounds only** - No inline content in modals or beads
+5. **Activation/deactivation lifecycle** - All content must cleanly activate and deactivate
+6. **Mobile-first** - Test on phone viewport (where guests will actually view it)
+7. **Performance matters** - Heavy videos/images should lazy-load and clean up properly
+
+### Common Gotchas
+
+- **YouTube autoplay requires mute** - Without `&mute=1`, videos won't autoplay
+- **YouTube loop requires playlist parameter** - `&loop=1&playlist=VIDEO_ID`
+- **Z-index layering** - Background effects use `z-index: -1`, modals use higher values
+- **Event indices are 0-based** - First event is index 0, not 1
+- **CSS class naming** - Use descriptive names like `weihnachten-video-bg`, not generic `video-1`
+
+### File Locations Reference
+
+- **Event definitions**: Line ~600 in `public/index.html`
+- **Background video setup**: Line ~806-851 in `public/index.html`
+- **Event activation hooks**: Line ~1217-1230 in `public/index.html`
+- **Event deactivation hooks**: Lines ~1122-1140 and ~1277-1295 in `public/index.html`
+- **Static images**: `/public/` directory (e.g., `kupferkanne.jpg`)
+- **CSS for backgrounds**: Line ~169-189 in `public/index.html` (in `<style>` tag)
+
+---
+
+**Last Updated**: December 16, 2025 (late afternoon - added content integration guide)
+**Version**: 2.4 (YouTube Video Integration + Documentation)
 **Status**: ✅ Production Ready
