@@ -250,15 +250,19 @@
                 grouped[event.id] = [];
             });
 
-            rsvps.forEach(rsvp => {
+            // Filter to only current Holiday Season events (excludes old Birthday RSVPs)
+            const currentEventIds = events.map(e => e.id);
+            const filteredRsvps = rsvps.filter(rsvp => currentEventIds.includes(rsvp.event_id));
+
+            filteredRsvps.forEach(rsvp => {
                 if (grouped[rsvp.event_id]) {
                     grouped[rsvp.event_id].push(rsvp);
                 }
             });
 
-            // Calculate stats
-            let totalRSVPs = rsvps.length;
-            let totalPlusOnes = rsvps.reduce((sum, rsvp) => sum + (rsvp.plus_ones || 0), 0);
+            // Calculate stats from filtered RSVPs only
+            let totalRSVPs = filteredRsvps.length;
+            let totalPlusOnes = filteredRsvps.reduce((sum, rsvp) => sum + (rsvp.plus_ones || 0), 0);
             let totalGuests = totalRSVPs + totalPlusOnes;
 
             document.getElementById('totalGuests').textContent = totalGuests;
