@@ -682,30 +682,32 @@
         scene.add(ring);
 
         // Christmas chain lights on the ring
-        const numLights = 40;
+        const numLights = 30;
         const chainLights = [];
+        const lightColors = [0xffd700, 0xff0000, 0x00ff00, 0x0000ff, 0xffffff]; // Gold, red, green, blue, white
         for (let i = 0; i < numLights; i++) {
             const angle = (i / numLights) * Math.PI * 2;
-            const lightGeometry = new THREE.SphereGeometry(0.02, 16, 16);
-            const lightMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0xfff4d9,
-                emissive: 0xfff4d9,
-                emissiveIntensity: 0.8,
-                metalness: 0.3,
+            const lightGeometry = new THREE.SphereGeometry(0.06, 16, 16); // Bigger!
+            const lightColor = lightColors[i % lightColors.length];
+            const lightMaterial = new THREE.MeshStandardMaterial({
+                color: lightColor,
+                emissive: lightColor,
+                emissiveIntensity: 1.2,
+                metalness: 0.8,
                 roughness: 0.2
             });
             const light = new THREE.Mesh(lightGeometry, lightMaterial);
             light.position.x = Math.cos(angle) * ringRadius;
             light.position.y = Math.sin(angle) * ringRadius;
-            light.position.z = 0;
+            light.position.z = 0.05; // Slightly forward
             scene.add(light);
             chainLights.push(light);
 
             // Random blinking for each light
             const delay = Math.random() * 2;
-            const duration = 0.3 + Math.random() * 0.4;
+            const duration = 0.3 + Math.random() * 0.5;
             gsap.to(light.material, {
-                emissiveIntensity: 0.1,
+                emissiveIntensity: 0.2,
                 duration: duration,
                 delay: delay,
                 repeat: -1,
@@ -753,17 +755,12 @@
             // Visible sphere - ULTRA-realistic Christmas ornament (Christbaum Kugel)
             const markerGeometry = new THREE.SphereGeometry(0.12, 64, 64);
             const beadColor = event.color;
-            const markerMaterial = new THREE.MeshPhysicalMaterial({
+            const markerMaterial = new THREE.MeshStandardMaterial({
                 color: beadColor,
                 emissive: beadColor,
-                emissiveIntensity: 0.12,
-                metalness: 0.95,           // High metalness
-                roughness: 0.08,           // Shinier than before
-                clearcoat: 1.0,            // Maximum gloss coating
-                clearcoatRoughness: 0.05,  // Slightly less perfect for realism
-                reflectivity: 1.0,         // Maximum reflectivity
-                iridescence: 0.2,          // Subtle rainbow sheen
-                iridescenceIOR: 1.2        // Soap bubble effect
+                emissiveIntensity: 0.1,
+                metalness: 1.0,            // Full metallic
+                roughness: 0.15            // Polished metal finish
             });
 
             const marker = new THREE.Mesh(markerGeometry, markerMaterial);
