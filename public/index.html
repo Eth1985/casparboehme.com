@@ -976,15 +976,123 @@
             console.log('🍺 Kupferkanne deactivated');
         }
 
-        // Event 4: SPA - Sauna Background
-        function activateSauna() {
-            document.body.classList.add('sauna-active');
-            console.log('🧖 Sauna background activated');
+        // Event 4: SPA - Water Ripple Effect
+        // Water ripple shader for elegant spa atmosphere
+        let waterRippleActive = false;
+        let waterRippleIntensity = 0.0;
+        let waterRippleIntensityTarget = 0.0;
+
+        // Store original ring material
+        let originalRingMaterial = null;
+        let waterRippleMaterial = null;
+
+        function createWaterRippleMaterial() {
+            return new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0.0 },
+                    intensity: { value: 0.0 },
+                    ringColor: { value: new THREE.Color(0xC0C0C0) } // Chrome silver
+                },
+                vertexShader: `
+                    uniform float time;
+                    uniform float intensity;
+                    varying vec3 vNormal;
+                    varying vec3 vPosition;
+
+                    // Simple sine-based ripple function
+                    float ripple(vec2 uv, float t) {
+                        float dist = length(uv);
+                        float ripple1 = sin(dist * 20.0 - t * 3.0) * 0.5 + 0.5;
+                        float ripple2 = sin(dist * 15.0 - t * 2.0 + 1.5) * 0.5 + 0.5;
+                        float ripple3 = sin(dist * 10.0 - t * 1.5 + 3.0) * 0.5 + 0.5;
+                        return (ripple1 + ripple2 + ripple3) / 3.0;
+                    }
+
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        vPosition = position;
+
+                        vec3 pos = position;
+
+                        // Apply ripple displacement
+                        vec2 uv = pos.xy;
+                        float rippleAmount = ripple(uv, time) * intensity * 0.05;
+
+                        // Displace along normal direction
+                        pos += normal * rippleAmount;
+
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float time;
+                    uniform float intensity;
+                    uniform vec3 ringColor;
+                    varying vec3 vNormal;
+                    varying vec3 vPosition;
+
+                    void main() {
+                        // Water-like shimmering effect
+                        vec2 uv = vPosition.xy;
+                        float shimmer = sin(length(uv) * 15.0 - time * 2.0) * 0.5 + 0.5;
+                        shimmer = shimmer * intensity * 0.3 + (1.0 - intensity * 0.3);
+
+                        // Fresnel effect for water-like reflections
+                        float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.0);
+
+                        // Add cyan/aqua tint when active
+                        vec3 waterTint = vec3(0.7, 0.9, 1.0);
+                        vec3 finalColor = mix(ringColor, ringColor * waterTint, intensity * 0.4);
+                        finalColor *= shimmer;
+                        finalColor += vec3(fresnel * intensity * 0.2);
+
+                        gl_FragColor = vec4(finalColor, 1.0);
+                    }
+                `,
+                metalness: 0.8,
+                roughness: 0.2
+            });
         }
 
-        function deactivateSauna() {
+        function activateWaterRipple() {
+            waterRippleActive = true;
+            waterRippleIntensityTarget = 1.0;
+            document.body.classList.add('sauna-active'); // Keep sauna background
+
+            // Switch ring material to water ripple shader
+            if (!waterRippleMaterial) {
+                waterRippleMaterial = createWaterRippleMaterial();
+            }
+            if (!originalRingMaterial) {
+                originalRingMaterial = ring.material;
+            }
+            ring.material = waterRippleMaterial;
+
+            console.log('💧 Water ripple effect activated');
+        }
+
+        function deactivateWaterRipple() {
+            waterRippleActive = false;
+            waterRippleIntensityTarget = 0.0;
             document.body.classList.remove('sauna-active');
-            console.log('🧖 Sauna background deactivated');
+
+            // Restore original ring material
+            if (originalRingMaterial) {
+                ring.material = originalRingMaterial;
+            }
+
+            console.log('💧 Water ripple effect deactivated');
+        }
+
+        function updateWaterRipple(deltaTime) {
+            if (!waterRippleMaterial) return;
+
+            // Smooth intensity transition
+            waterRippleIntensity += (waterRippleIntensityTarget - waterRippleIntensity) * 0.05;
+            waterRippleMaterial.uniforms.intensity.value = waterRippleIntensity;
+
+            // Update time for animation
+            waterRippleMaterial.uniforms.time.value += deltaTime * 0.001;
         }
 
         // Event 5: Silvester Buffet - Blue Fire System
@@ -1312,7 +1420,7 @@
                 }
 
                 if (currentActive === 4) {
-                    deactivateSauna();
+                    deactivateWaterRipple();
                 }
 
                 if (currentActive === 5) {
@@ -1407,7 +1515,7 @@
             }
 
             if (index === 4) {
-                activateSauna();
+                activateWaterRipple();
             }
 
             if (index === 5) {
@@ -1522,6 +1630,9 @@
 
             // Subtle pulse
             ring.scale.setScalar(1 + Math.sin(Date.now() * 0.0008) * 0.008);
+
+            // Update water ripple animation
+            updateWaterRipple(deltaTime);
 
             // Update blue fire animation
             updateBlueFire(deltaTime);
