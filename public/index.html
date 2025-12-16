@@ -730,8 +730,8 @@
             );
             const segmentMaterial = new THREE.MeshStandardMaterial({
                 color: 0x0B4D0B,  // Dark metallic green
-                emissive: 0x0B4D0B,
-                emissiveIntensity: 0.1,
+                emissive: 0x000000,  // No glow - prevents white outline
+                emissiveIntensity: 0,
                 transparent: true,
                 opacity: 0.3,
                 metalness: 0.8,  // High metalness for metallic appearance
