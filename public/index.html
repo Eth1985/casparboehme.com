@@ -640,9 +640,6 @@
         });
     </script>
 
-    <!-- YouTube IFrame API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-
     <script>
         const events = [
             { date: 'December 23', time: '19:00', endTime: '20:00', title: 'Luther & Wegner Dinner', location: 'KaDeWe, 6. Etage', address: 'KaDeWe, Tauentzienstraße 21-24, 10789 Berlin', color: 0xD4AF37 },  // Rich gold
@@ -850,69 +847,33 @@
         }
 
         // Event 1: Champagner BAR - YouTube Video
-        const champagneVideoDiv = document.createElement('div');
-        champagneVideoDiv.id = 'champagne-player';
-        champagneVideoDiv.className = 'youtube-video-bg';
-        champagneVideoDiv.style.width = '177.77vh';
-        champagneVideoDiv.style.height = '100vw';
-        document.body.appendChild(champagneVideoDiv);
+        const champagneVideo = document.createElement('iframe');
+        champagneVideo.src = 'https://www.youtube.com/embed/STH3VwMJP7Q?autoplay=1&mute=1&loop=1&playlist=STH3VwMJP7Q&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+        champagneVideo.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
+        champagneVideo.className = 'youtube-video-bg';
+        champagneVideo.style.width = '177.77vh';
+        champagneVideo.style.height = '100vw';
+        champagneVideo.setAttribute('frameborder', '0');
+        champagneVideo.setAttribute('allowfullscreen', '');
+        document.body.appendChild(champagneVideo);
 
-        let champagnePlayer = null;
         let champagneVideoActive = false;
-
-        function initChampagnePlayer() {
-            if (!champagnePlayer && window.YT) {
-                champagnePlayer = new YT.Player('champagne-player', {
-                    videoId: 'STH3VwMJP7Q',
-                    playerVars: {
-                        autoplay: 0,
-                        mute: 1,
-                        loop: 1,
-                        playlist: 'STH3VwMJP7Q',
-                        controls: 0,
-                        showinfo: 0,
-                        rel: 0,
-                        modestbranding: 1,
-                        playsinline: 1
-                    },
-                    events: {
-                        'onReady': function(event) {
-                            console.log('🍾 Champagne player ready');
-                        }
-                    }
-                });
-            }
-        }
 
         function activateChampagneVideo() {
             champagneVideoActive = true;
-            champagneVideoDiv.classList.add('active');
-            if (champagnePlayer && champagnePlayer.playVideo) {
-                champagnePlayer.playVideo();
-            } else {
-                initChampagnePlayer();
-                setTimeout(() => {
-                    if (champagnePlayer && champagnePlayer.playVideo) {
-                        champagnePlayer.playVideo();
-                    }
-                }, 500);
-            }
+            champagneVideo.classList.add('active');
+            // Force reload for mobile autoplay
+            const currentSrc = champagneVideo.src;
+            champagneVideo.src = '';
+            champagneVideo.src = currentSrc;
             console.log('🍾 Champagne video activated');
         }
 
         function deactivateChampagneVideo() {
             champagneVideoActive = false;
-            champagneVideoDiv.classList.remove('active');
-            if (champagnePlayer && champagnePlayer.pauseVideo) {
-                champagnePlayer.pauseVideo();
-            }
+            champagneVideo.classList.remove('active');
             console.log('🍾 Champagne video deactivated');
         }
-
-        // Initialize when API is ready
-        window.onYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady || function() {
-            initChampagnePlayer();
-        };
 
         // Event 2: Weihnachten - YouTube Video Background
         const weihnachtenVideo = document.createElement('iframe');
