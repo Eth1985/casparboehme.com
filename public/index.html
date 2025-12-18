@@ -862,6 +862,10 @@
         function activateChampagneVideo() {
             champagneVideoActive = true;
             champagneVideo.classList.add('active');
+            // Force reload for mobile autoplay
+            const currentSrc = champagneVideo.src;
+            champagneVideo.src = '';
+            champagneVideo.src = currentSrc;
             console.log('🍾 Champagne video activated');
         }
 
@@ -887,6 +891,10 @@
         function activateWeihnachtenVideo() {
             weihnachtenVideoActive = true;
             weihnachtenVideo.classList.add('active');
+            // Force reload for mobile autoplay
+            const currentSrc = weihnachtenVideo.src;
+            weihnachtenVideo.src = '';
+            weihnachtenVideo.src = currentSrc;
             console.log('🎄 Weihnachten video activated');
         }
 
@@ -1398,6 +1406,10 @@
         function activateFireworksVideo() {
             fireworksVideoActive = true;
             fireworksVideo.classList.add('active');
+            // Force reload for mobile autoplay
+            const currentSrc = fireworksVideo.src;
+            fireworksVideo.src = '';
+            fireworksVideo.src = currentSrc;
             console.log('🎆 Fireworks video activated');
         }
 
