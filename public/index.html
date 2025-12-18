@@ -848,12 +848,13 @@
 
         // Event 1: Champagner BAR - YouTube Video
         const champagneVideo = document.createElement('iframe');
-        champagneVideo.src = 'https://www.youtube.com/embed/STH3VwMJP7Q?autoplay=1&mute=1&loop=1&playlist=STH3VwMJP7Q&controls=0&showinfo=0&rel=0&modestbranding=1';
-        champagneVideo.allow = 'autoplay; encrypted-media';
+        champagneVideo.src = 'https://www.youtube.com/embed/STH3VwMJP7Q?autoplay=1&mute=1&loop=1&playlist=STH3VwMJP7Q&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+        champagneVideo.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
         champagneVideo.className = 'youtube-video-bg';
         champagneVideo.style.width = '177.77vh';
         champagneVideo.style.height = '100vw';
         champagneVideo.setAttribute('frameborder', '0');
+        champagneVideo.setAttribute('allowfullscreen', '');
         document.body.appendChild(champagneVideo);
 
         let champagneVideoActive = false;
@@ -872,12 +873,13 @@
 
         // Event 2: Weihnachten - YouTube Video Background
         const weihnachtenVideo = document.createElement('iframe');
-        weihnachtenVideo.src = 'https://www.youtube.com/embed/rgEP1niScLc?start=76&autoplay=1&mute=1&loop=1&playlist=rgEP1niScLc&controls=0&showinfo=0&rel=0&modestbranding=1';
-        weihnachtenVideo.allow = 'autoplay; encrypted-media';
+        weihnachtenVideo.src = 'https://www.youtube.com/embed/rgEP1niScLc?start=76&autoplay=1&mute=1&loop=1&playlist=rgEP1niScLc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+        weihnachtenVideo.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
         weihnachtenVideo.className = 'youtube-video-bg';
         weihnachtenVideo.style.width = '177.77vh';
         weihnachtenVideo.style.height = '100vw';
         weihnachtenVideo.setAttribute('frameborder', '0');
+        weihnachtenVideo.setAttribute('allowfullscreen', '');
         document.body.appendChild(weihnachtenVideo);
 
         let weihnachtenVideoActive = false;
@@ -1382,12 +1384,13 @@
 
         // Event 6: NYE Party - Fireworks YouTube Video
         const fireworksVideo = document.createElement('iframe');
-        fireworksVideo.src = 'https://www.youtube.com/embed/RfGu1THRr3U?autoplay=1&mute=1&loop=1&playlist=RfGu1THRr3U&controls=0&showinfo=0&rel=0&modestbranding=1';
-        fireworksVideo.allow = 'autoplay; encrypted-media';
+        fireworksVideo.src = 'https://www.youtube.com/embed/RfGu1THRr3U?autoplay=1&mute=1&loop=1&playlist=RfGu1THRr3U&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+        fireworksVideo.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
         fireworksVideo.className = 'youtube-video-bg';
         fireworksVideo.style.width = '177.77vh';
         fireworksVideo.style.height = '100vw';
         fireworksVideo.setAttribute('frameborder', '0');
+        fireworksVideo.setAttribute('allowfullscreen', '');
         document.body.appendChild(fireworksVideo);
 
         let fireworksVideoActive = false;
